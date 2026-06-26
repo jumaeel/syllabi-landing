@@ -1,0 +1,1154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Syllabi Store</title>
+  <link rel="icon" type="image/png" href="../assets/logo/syllabi-icon.png">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --navy:   #000938; --teal:   #00D9BF; --purple: #6B80FF;
+      --yellow: #FDB800; --pos:    #0DAC52; --neg:    #FF3721;
+      --bg:     #F3F4F6; --white:  #FFFFFF;
+      --text-1: #111827; --text-2: #374151; --text-3: #9CA3AF;
+      --border: #E5E7EB; --font:   'Poppins', sans-serif;
+      --shadow: 0 4px 24px rgba(0,9,56,.07);
+      --shadow-lg: 0 12px 40px rgba(0,9,56,.12);
+      --r: 14px;
+    }
+    body { font-family: var(--font); background: var(--bg); color: var(--text-2); min-height: 100vh; }
+
+    /* ── NAV ── */
+    .topnav {
+      background: rgba(255,255,255,0.65);
+      backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
+      border: 1px solid rgba(255,255,255,0.55);
+      border-radius: 20px;
+      box-shadow: 0 8px 32px rgba(0,9,56,.08), inset 0 1px 0 rgba(255,255,255,.8);
+      padding: 0 24px; height: 60px; display: flex; align-items: center; justify-content: space-between;
+      position: sticky; top: 16px; z-index: 200;
+      margin: 16px 48px 0;
+    }
+    .topnav-logo img { height: 32px; object-fit: contain; }
+    .topnav-right { display: flex; align-items: center; gap: 12px; }
+    .cart-btn {
+      height: 40px; padding: 0 18px; border-radius: 12px; border: 1.5px solid var(--border);
+      background: rgba(255,255,255,0.8); font-family: var(--font); font-size: 14px; font-weight: 600;
+      color: var(--text-1); cursor: pointer; display: flex; align-items: center; gap: 8px;
+      transition: border-color .2s, box-shadow .2s;
+      backdrop-filter: blur(8px);
+    }
+    .cart-btn:hover { border-color: var(--teal); box-shadow: 0 2px 8px rgba(0,217,191,.15); }
+    .cart-badge {
+      width: 20px; height: 20px; border-radius: 50%; background: var(--navy); color: #fff;
+      font-size: 11px; font-weight: 700; display: flex; align-items: center; justify-content: center;
+    }
+    .sign-btn {
+      height: 40px; padding: 0 18px; border-radius: 10px; border: none;
+      background: var(--navy); color: #E5E7EB; font-family: var(--font);
+      font-size: 14px; font-weight: 600; cursor: pointer;
+    }
+
+    /* ── SCREENS ── */
+    .screen { display: none; }
+    .screen.active { display: block; }
+
+    /* ── STORE ── */
+    .store-wrap { max-width: 1100px; margin: 0 auto; padding: 48px 24px; }
+    .store-hero {
+      background: linear-gradient(135deg, var(--navy) 0%, #0d1a70 100%);
+      border-radius: 20px; padding: 44px 48px; margin-bottom: 36px; color: #fff;
+      display: flex; align-items: center; justify-content: space-between; gap: 32px; flex-wrap: wrap;
+    }
+    .store-hero h1 { font-size: 36px; font-weight: 800; letter-spacing: -1px; margin-bottom: 8px; }
+    .store-hero p  { font-size: 16px; color: rgba(255,255,255,.65); max-width: 420px; line-height: 1.6; }
+    .hero-badge { background: rgba(0,217,191,.15); border: 1px solid rgba(0,217,191,.3); border-radius: 20px; padding: 6px 14px; display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600; color: var(--teal); margin-bottom: 16px; }
+    .hero-price-eg { background: rgba(255,255,255,.08); border-radius: 12px; padding: 16px 20px; text-align: center; }
+    .hero-price-eg .from { font-size: 11px; color: rgba(255,255,255,.5); }
+    .hero-price-eg .price { font-size: 32px; font-weight: 800; color: var(--teal); }
+    .hero-price-eg .per  { font-size: 12px; color: rgba(255,255,255,.5); }
+
+    .store-section-title { font-size: 20px; font-weight: 700; color: var(--text-1); margin-bottom: 20px; }
+    .products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px; margin-bottom: 48px; }
+    .product-card {
+      background: var(--white); border-radius: var(--r); border: 1.5px solid var(--border);
+      padding: 24px; transition: box-shadow .2s, border-color .2s, transform .15s;
+      cursor: default;
+    }
+    .product-card:hover { box-shadow: var(--shadow-lg); border-color: #D1D5DB; transform: translateY(-1px); }
+    .product-card.premium { border-color: var(--navy); }
+    .product-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; margin-bottom: 16px; }
+    .product-icon { width: 52px; height: 52px; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 24px; flex-shrink: 0; }
+    .product-badge { font-size: 10px; font-weight: 700; padding: 3px 10px; border-radius: 20px; }
+    .product-badge.popular { background: rgba(0,217,191,.12); color: #007a72; }
+    .product-badge.best    { background: rgba(253,184,0,.2); color: #8a6200; }
+    .product-badge.new     { background: rgba(107,128,255,.1); color: #3d50cc; }
+    .product-name { font-size: 17px; font-weight: 700; color: var(--text-1); margin-bottom: 4px; }
+    .product-desc { font-size: 13px; color: var(--text-3); line-height: 1.55; margin-bottom: 20px; }
+    .product-features { display: flex; flex-direction: column; gap: 6px; margin-bottom: 20px; }
+    .product-feature { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--text-2); }
+    .feat-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--teal); flex-shrink: 0; }
+    .product-footer { display: flex; align-items: center; justify-content: space-between; }
+    .product-price { font-size: 24px; font-weight: 800; color: var(--text-1); letter-spacing: -0.5px; }
+    .product-price span { font-size: 14px; font-weight: 500; color: var(--text-3); }
+    .add-btn {
+      height: 40px; padding: 0 18px; border-radius: 10px; border: none;
+      background: var(--navy); color: #E5E7EB; font-family: var(--font);
+      font-size: 13px; font-weight: 600; cursor: pointer; transition: opacity .15s, background .15s;
+    }
+    .add-btn:hover { opacity: .88; }
+    .add-btn.added { background: var(--teal); color: var(--navy); }
+
+    /* ── CART DRAWER ── */
+    .drawer-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.3); z-index: 300; display: none; opacity: 0; transition: opacity .25s; }
+    .drawer-overlay.open { display: block; opacity: 1; }
+    .cart-drawer {
+      position: fixed; top: 0; right: 0; bottom: 0; width: 420px; background: var(--white);
+      z-index: 301; transform: translateX(100%); transition: transform .3s cubic-bezier(.4,0,.2,1);
+      display: flex; flex-direction: column; box-shadow: -8px 0 40px rgba(0,0,0,.1);
+    }
+    .cart-drawer.open { transform: translateX(0); }
+    .drawer-header { padding: 24px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+    .drawer-header h2 { font-size: 20px; font-weight: 700; color: var(--text-1); }
+    .close-btn { width: 32px; height: 32px; border-radius: 50%; border: 1.5px solid var(--border); background: none; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 16px; }
+    .drawer-items { flex: 1; overflow-y: auto; padding: 20px 24px; display: flex; flex-direction: column; gap: 12px; }
+    .cart-item { display: flex; align-items: center; gap: 14px; background: var(--bg); border-radius: 10px; padding: 14px; }
+    .cart-item-icon { width: 44px; height: 44px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0; }
+    .cart-item-info { flex: 1; }
+    .cart-item-name  { font-size: 14px; font-weight: 600; color: var(--text-1); }
+    .cart-item-price { font-size: 13px; color: var(--text-3); margin-top: 2px; }
+    .qty-stepper { display:flex;align-items:center;gap:6px;margin-top:6px; }
+    .qty-btn { width:24px;height:24px;border-radius:6px;border:1.5px solid var(--border);background:none;cursor:pointer;font-size:14px;font-weight:700;color:var(--text-2);display:flex;align-items:center;justify-content:center;transition:all .15s;line-height:1; }
+    .qty-btn:hover { border-color:var(--navy);color:var(--navy); }
+    .qty-val { font-size:13px;font-weight:700;color:var(--text-1);min-width:18px;text-align:center; } border-radius: 50%; border: 1.5px solid var(--border); background: none; cursor: pointer; display: flex; align-items: center; justify-content: center; color: var(--text-3); font-size: 14px; transition: border-color .15s, color .15s; }
+    .remove-btn:hover { border-color: var(--neg); color: var(--neg); }
+    .drawer-empty { text-align: center; padding: 60px 24px; }
+    .drawer-empty .empty-icon { font-size: 48px; margin-bottom: 12px; }
+    .drawer-empty p { font-size: 15px; color: var(--text-3); }
+    .drawer-footer { padding: 20px 24px; border-top: 1px solid var(--border); }
+    .cart-total-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+    .cart-total-label { font-size: 15px; font-weight: 600; color: var(--text-2); }
+    .cart-total-price { font-size: 28px; font-weight: 800; color: var(--text-1); letter-spacing: -0.5px; }
+    .checkout-btn {
+      width: 100%; height: 52px; border-radius: 12px; border: none;
+      background: var(--navy); color: #E5E7EB; font-family: var(--font);
+      font-size: 15px; font-weight: 600; cursor: pointer; transition: opacity .15s;
+    }
+    .checkout-btn:hover { opacity: .88; }
+    .checkout-btn:disabled { opacity: .4; cursor: not-allowed; }
+
+    /* ── CHECKOUT ── */
+    .checkout-wrap { max-width: 900px; margin: 0 auto; padding: 48px 24px; display: grid; grid-template-columns: 1fr 360px; gap: 28px; align-items: start; }
+    .checkout-left { display: flex; flex-direction: column; gap: 24px; }
+    .checkout-section { background: var(--white); border-radius: var(--r); border: 1px solid var(--border); padding: 28px; }
+    .section-head { font-size: 17px; font-weight: 700; color: var(--text-1); margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }
+    .section-step { width: 28px; height: 28px; border-radius: 50%; background: var(--navy); color: #fff; font-size: 13px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .form-row { display: flex; gap: 12px; }
+    .form-group { flex: 1; display: flex; flex-direction: column; gap: 6px; }
+    .form-group label { font-size: 12px; font-weight: 600; color: var(--text-2); }
+    .form-input {
+      height: 44px; border: 1.5px solid var(--border); border-radius: 8px;
+      padding: 0 14px; font-family: var(--font); font-size: 14px; color: var(--text-1);
+      background: var(--white); outline: none; transition: border-color .2s;
+    }
+    .form-input:focus { border-color: var(--navy); }
+    /* Payment methods */
+    .payment-methods { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .payment-method {
+      border: 2px solid var(--border); border-radius: 10px; padding: 14px 16px;
+      cursor: pointer; transition: border-color .2s, background .2s;
+      display: flex; align-items: center; gap: 10px; user-select: none;
+    }
+    .payment-method:hover { border-color: #D1D5DB; }
+    .payment-method.selected { border-color: var(--navy); background: rgba(0,9,56,.03); }
+    .pm-icon { width: 36px; height: 24px; border-radius: 4px; object-fit: contain; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; flex-shrink: 0; }
+    .pm-name { font-size: 13px; font-weight: 600; color: var(--text-1); }
+    .pm-sub  { font-size: 11px; color: var(--text-3); }
+    /* Order summary sidebar */
+    .order-summary { background: var(--white); border-radius: var(--r); border: 1px solid var(--border); padding: 24px; position: sticky; top: 80px; }
+    .os-title { font-size: 16px; font-weight: 700; color: var(--text-1); margin-bottom: 18px; }
+    .os-items { display: flex; flex-direction: column; gap: 10px; margin-bottom: 18px; }
+    .os-item { display: flex; align-items: center; gap: 10px; }
+    .os-item-icon { width: 36px; height: 36px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0; }
+    .os-item-name  { flex: 1; font-size: 13px; font-weight: 500; color: var(--text-1); }
+    .os-item-price { font-size: 13px; font-weight: 600; color: var(--text-1); }
+    .os-divider { height: 1px; background: var(--border); margin: 14px 0; }
+    .os-total-row { display: flex; justify-content: space-between; align-items: center; }
+    .os-total-label { font-size: 14px; font-weight: 600; color: var(--text-2); }
+    .os-total-price { font-size: 24px; font-weight: 800; color: var(--text-1); }
+    .pay-btn {
+      width: 100%; height: 52px; border-radius: 12px; border: none; margin-top: 18px;
+      background: var(--navy); color: #E5E7EB; font-family: var(--font);
+      font-size: 15px; font-weight: 600; cursor: pointer; transition: opacity .15s;
+    }
+    .pay-btn:hover { opacity: .88; }
+    .secure-note { text-align: center; margin-top: 10px; font-size: 12px; color: var(--text-3); display: flex; align-items: center; justify-content: center; gap: 5px; }
+
+    /* ── SUCCESS ── */
+    .success-wrap { max-width: 680px; margin: 0 auto; padding: 60px 24px; display: flex; flex-direction: column; gap: 24px; }
+    .success-banner {
+      background: linear-gradient(135deg, var(--navy), #0d1a70);
+      border-radius: 20px; padding: 40px; text-align: center; color: #fff;
+    }
+    .success-icon { width: 72px; height: 72px; border-radius: 50%; background: rgba(0,217,191,.2); display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; font-size: 32px; }
+    .success-banner h2 { font-size: 28px; font-weight: 800; margin-bottom: 8px; }
+    .success-banner p  { font-size: 16px; color: rgba(255,255,255,.65); }
+    .code-card { background: var(--white); border-radius: var(--r); border: 1px solid var(--border); padding: 32px; }
+    .code-card h3 { font-size: 16px; font-weight: 700; color: var(--text-1); margin-bottom: 6px; }
+    .code-card p  { font-size: 14px; color: var(--text-3); margin-bottom: 24px; }
+    .code-block {
+      background: var(--bg); border: 2px dashed var(--border); border-radius: 12px;
+      padding: 20px; text-align: center; margin-bottom: 16px;
+    }
+    .code-label { font-size: 11px; font-weight: 600; color: var(--text-3); text-transform: uppercase; letter-spacing: .08em; margin-bottom: 8px; }
+    .code-value { font-size: 28px; font-weight: 800; color: var(--navy); letter-spacing: 3px; font-family: monospace; }
+    .code-product { font-size: 13px; color: var(--text-3); margin-top: 6px; }
+    .copy-btn {
+      width: 100%; height: 44px; border-radius: 10px; border: 1.5px solid var(--border);
+      background: none; font-family: var(--font); font-size: 14px; font-weight: 600;
+      color: var(--text-1); cursor: pointer; transition: all .2s; display: flex; align-items: center; justify-content: center; gap: 8px;
+    }
+    .copy-btn:hover { border-color: var(--teal); color: var(--teal); }
+    .redeem-steps { background: var(--white); border-radius: var(--r); border: 1px solid var(--border); padding: 28px; }
+    .redeem-steps h3 { font-size: 16px; font-weight: 700; color: var(--text-1); margin-bottom: 18px; }
+    .step-list { display: flex; flex-direction: column; gap: 0; }
+    .step-item { display: flex; gap: 16px; padding: 12px 0; position: relative; }
+    .step-item:not(:last-child)::after { content: ''; position: absolute; left: 15px; top: 44px; bottom: -4px; width: 2px; background: var(--border); }
+    .step-num { width: 32px; height: 32px; border-radius: 50%; background: var(--bg); border: 2px solid var(--border); display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; color: var(--text-2); flex-shrink: 0; }
+    .step-item.done .step-num { background: rgba(0,217,191,.1); border-color: var(--teal); color: var(--teal); }
+    .step-text { padding-top: 4px; }
+    .step-text .st { font-size: 14px; font-weight: 600; color: var(--text-1); }
+    .step-text .ss { font-size: 13px; color: var(--text-3); margin-top: 2px; }
+    /* Unlock banner */
+    .unlock-card { background: rgba(0,217,191,.06); border: 1.5px solid rgba(0,217,191,.25); border-radius: var(--r); padding: 20px 24px; display: flex; align-items: center; gap: 16px; }
+    .unlock-icon { font-size: 28px; }
+    .unlock-text h4 { font-size: 15px; font-weight: 700; color: var(--text-1); }
+    .unlock-text p  { font-size: 13px; color: var(--text-3); margin-top: 2px; }
+    /* App redemption phone */
+    .app-redeem { background: var(--white); border-radius: var(--r); border: 1px solid var(--border); padding: 28px; display: flex; gap: 32px; align-items: flex-start; }
+    .app-phone { flex-shrink: 0; }
+    .mini-phone { width: 200px; background: var(--navy); border-radius: 32px; border: 6px solid #0d1a50; overflow: hidden; box-shadow: 0 16px 48px rgba(0,9,56,.2); }
+    .mini-notch { height: 20px; background: var(--navy); display: flex; justify-content: center; }
+    .mini-screen { background: #F3F4F6; padding: 12px; }
+    .ms-back { display: flex; align-items: center; gap: 6px; margin-bottom: 12px; }
+    .ms-header { font-size: 13px; font-weight: 700; color: #374151; }
+    .ms-card { background: white; border-radius: 10px; padding: 12px; box-shadow: 0 3px 12px rgba(31,41,55,.08); margin-bottom: 10px; }
+    .ms-label { font-size: 10px; font-weight: 600; color: #374151; margin-bottom: 8px; }
+    .ms-input { height: 36px; border: 1.5px solid #E5E7EB; border-radius: 7px; display: flex; align-items: center; padding: 0 10px; font-size: 11px; font-weight: 700; color: #000938; font-family: monospace; letter-spacing: 1px; background: #F9FAFB; }
+    .ms-btn { height: 34px; background: #000938; border-radius: 7px; display: flex; align-items: center; justify-content: center; margin-top: 8px; }
+    .ms-btn span { font-size: 11px; font-weight: 600; color: #E5E7EB; }
+    .ms-success { background: rgba(0,217,191,.1); border: 1px solid rgba(0,217,191,.2); border-radius: 8px; padding: 10px; text-align: center; }
+    .ms-success .ms-emoji { font-size: 20px; margin-bottom: 4px; }
+    .ms-success .ms-t { font-size: 9px; font-weight: 700; color: #007a72; }
+    .ms-success .ms-s { font-size: 8px; color: #9CA3AF; margin-top: 1px; }
+    .app-phone-info { flex: 1; }
+    .app-phone-info h3 { font-size: 16px; font-weight: 700; color: var(--text-1); margin-bottom: 8px; }
+    .app-phone-info p  { font-size: 14px; color: var(--text-3); line-height: 1.65; margin-bottom: 16px; }
+    .path-steps { display: flex; flex-direction: column; gap: 8px; }
+    .path-step { display: flex; align-items: center; gap: 10px; font-size: 13px; font-weight: 500; color: var(--text-2); background: var(--bg); padding: 10px 14px; border-radius: 8px; }
+    .path-step .ps-arrow { color: var(--teal); font-weight: 700; }
+
+    /* ── Game cards (image-first) ── */
+    .games-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 16px; margin-bottom: 48px; }
+    .game-card { background: var(--white); border-radius: var(--r); border: 1.5px solid var(--border); overflow: hidden; transition: box-shadow .2s, transform .15s; }
+    .game-card:hover { box-shadow: var(--shadow-lg); transform: translateY(-2px); }
+    .game-img { height: 200px; background: var(--bg); display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden; }
+    .game-img img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .game-img-placeholder { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; width: 100%; height: 100%; background: linear-gradient(135deg, #F3F4F6, #E9EBF0); }
+    .game-img-placeholder .ph-icon { font-size: 40px; opacity: .5; }
+    .game-img-placeholder .ph-text { font-size: 11px; color: var(--text-3); font-weight: 500; }
+    .game-badge-img { position: absolute; top: 10px; right: 10px; font-size: 10px; font-weight: 700; padding: 3px 9px; border-radius: 20px; }
+    .game-body { padding: 16px; }
+    .game-name { font-size: 15px; font-weight: 700; color: var(--text-1); margin-bottom: 4px; }
+    .game-desc { font-size: 12px; color: var(--text-3); line-height: 1.55; margin-bottom: 12px; }
+    .game-feats { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 14px; }
+    .game-feat { font-size: 11px; font-weight: 500; background: var(--bg); color: var(--text-2); padding: 3px 9px; border-radius: 20px; }
+    .game-footer { display: flex; align-items: center; justify-content: space-between; }
+    .game-price { font-size: 20px; font-weight: 800; color: var(--text-1); letter-spacing: -0.5px; }
+    .game-price span { font-size: 12px; font-weight: 400; color: var(--text-3); }
+
+    /* ── Footer ── */
+    .store-footer { background:var(--navy); color:rgba(255,255,255,0.6); padding:48px 40px 28px; margin-top:40px; }
+    .store-footer .fi { max-width:1100px; margin:0 auto; }
+    .store-footer .ft { display:grid; grid-template-columns:1.8fr 1fr 1fr; gap:40px; margin-bottom:36px; }
+    .store-footer .fl img { height:28px; object-fit:contain; margin-bottom:10px; filter:brightness(0) invert(1); }
+    .store-footer .ft-tag { font-size:13px; color:rgba(255,255,255,0.45); line-height:1.6; max-width:280px; }
+    .store-footer .fc h4 { font-size:12px; font-weight:700; color:rgba(255,255,255,0.85); text-transform:uppercase; letter-spacing:.06em; margin-bottom:12px; }
+    .store-footer .fc a { display:block; font-size:13px; color:rgba(255,255,255,0.45); text-decoration:none; margin-bottom:8px; transition:color .2s; }
+    .store-footer .fc a:hover { color:var(--teal); }
+    .store-footer .app-btns { display:flex; gap:8px; margin-top:14px; }
+    .store-footer .app-btn { height:36px; padding:0 14px; border-radius:8px; border:1px solid rgba(255,255,255,0.2); display:flex; align-items:center; gap:7px; font-size:11px; font-weight:600; color:#fff; cursor:pointer; transition:border-color .2s; text-decoration:none; }
+    .store-footer .app-btn:hover { border-color:var(--teal); }
+    .store-footer .fb { border-top:1px solid rgba(255,255,255,0.08); padding-top:20px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; }
+    .store-footer .fb p { font-size:12px; color:rgba(255,255,255,0.3); }
+    .store-footer .fb-links { display:flex; gap:16px; }
+    .store-footer .fb-links a { font-size:12px; color:rgba(255,255,255,0.3); text-decoration:none; transition:color .2s; }
+    .store-footer .fb-links a:hover { color:var(--teal); }
+    .orders-wrap { max-width: 760px; margin: 0 auto; padding: 40px 24px; }
+    .orders-header { display:flex; align-items:center; gap:14px; margin-bottom:32px; }
+    .orders-header h2 { font-size:24px; font-weight:800; color:var(--text-1); }
+    .order-card { background:var(--white); border:1px solid var(--border); border-radius:var(--r); padding:20px 24px; margin-bottom:14px; }
+    .order-top { display:flex; align-items:center; justify-content:space-between; margin-bottom:14px; flex-wrap:wrap; gap:8px; }
+    .order-id { font-size:12px; font-weight:700; color:var(--text-3); font-family:monospace; }
+    .order-date { font-size:12px; color:var(--text-3); }
+    .order-status { font-size:11px; font-weight:700; padding:3px 10px; border-radius:20px; }
+    .order-status.complete { background:rgba(13,172,82,.1); color:#0DAC52; }
+    .order-status.pending  { background:rgba(253,184,0,.15); color:#8a6200; }
+    .order-items-list { display:flex; flex-direction:column; gap:8px; margin-bottom:14px; }
+    .order-item-row { display:flex; align-items:center; gap:12px; }
+    .order-item-icon { width:36px; height:36px; border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:16px; flex-shrink:0; }
+    .order-item-name { flex:1; font-size:14px; font-weight:500; color:var(--text-1); }
+    .order-item-price { font-size:14px; font-weight:600; color:var(--text-1); }
+    .order-footer { display:flex; align-items:center; justify-content:space-between; padding-top:12px; border-top:1px solid var(--border); }
+    .order-total-label { font-size:13px; color:var(--text-3); }
+    .order-total-val { font-size:18px; font-weight:800; color:var(--text-1); }
+    .order-code-pill { display:inline-flex; align-items:center; gap:6px; background:var(--bg); border:1px solid var(--border); border-radius:8px; padding:5px 12px; font-size:12px; font-weight:700; color:var(--text-2); font-family:monospace; cursor:pointer; transition:border-color .15s; }
+    .order-code-pill:hover { border-color:var(--teal); }
+    .orders-empty { text-align:center; padding:60px 24px; }
+    .orders-empty .oe-icon { font-size:48px; margin-bottom:12px; }
+    .orders-empty p { font-size:15px; color:var(--text-3); }
+    .signin-overlay { position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:600;display:none;align-items:center;justify-content:center; }
+    .signin-overlay.open { display:flex; }
+    .signin-modal { background:var(--white);border-radius:20px;padding:32px;width:380px;box-shadow:0 24px 64px rgba(0,0,0,.2);animation:intentIn .2s ease; }
+    .signin-modal h3 { font-size:20px;font-weight:800;color:var(--text-1);margin-bottom:4px; }
+    .signin-modal .sm-sub { font-size:13px;color:var(--text-3);margin-bottom:24px; }
+    .signin-modal .sm-group { margin-bottom:12px; }
+    .signin-modal .sm-label { font-size:12px;font-weight:600;color:var(--text-2);display:block;margin-bottom:5px; }
+    .signin-modal .sm-input { width:100%;height:44px;border:1.5px solid var(--border);border-radius:8px;padding:0 14px;font-family:var(--font);font-size:14px;color:var(--text-1);outline:none;box-sizing:border-box;transition:border-color .2s; }
+    .signin-modal .sm-input:focus { border-color:var(--navy); }
+    .signin-submit { width:100%;height:48px;border-radius:10px;border:none;background:var(--navy);color:#E5E7EB;font-family:var(--font);font-size:15px;font-weight:600;cursor:pointer;margin-top:16px;transition:opacity .15s;display:flex;align-items:center;justify-content:center;gap:8px; }
+    .signin-submit:hover { opacity:.88; }
+    .signin-cancel { width:100%;height:36px;border-radius:10px;border:none;background:none;font-family:var(--font);font-size:14px;color:var(--text-3);cursor:pointer;margin-top:6px; }
+    .sm-demo-note { font-size:11px;color:var(--text-3);text-align:center;background:var(--bg);border-radius:8px;padding:8px 12px;margin-bottom:16px; }
+    .intent-overlay { position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:500;display:none;align-items:center;justify-content:center; }
+    .intent-overlay.open { display:flex; }
+    .intent-modal { background:var(--white);border-radius:20px;padding:28px;width:360px;box-shadow:0 24px 64px rgba(0,0,0,.2);animation:intentIn .2s ease; }
+    @keyframes intentIn { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
+    .intent-modal h3 { font-size:17px;font-weight:700;color:var(--text-1);margin-bottom:6px; }
+    .intent-modal p  { font-size:13px;color:var(--text-3);margin-bottom:20px;line-height:1.55; }
+    .intent-options { display:flex;flex-direction:column;gap:10px; }
+    .intent-opt {
+      border:2px solid var(--border);border-radius:12px;padding:14px 16px;
+      cursor:pointer;transition:border-color .15s,background .15s;
+      display:flex;align-items:center;gap:14px;
+    }
+    .intent-opt:hover { border-color:#D1D5DB; }
+    .intent-opt.sel  { border-color:var(--navy);background:rgba(0,9,56,.03); }
+    .intent-opt-icon { width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0; }
+    .intent-opt-title { font-size:14px;font-weight:700;color:var(--text-1); }
+    .intent-opt-sub   { font-size:12px;color:var(--text-3);margin-top:2px; }
+    .intent-actions { display:flex;gap:8px;margin-top:18px; }
+    .intent-cancel { flex:1;height:44px;border-radius:10px;border:1.5px solid var(--border);background:none;font-family:var(--font);font-size:14px;font-weight:500;color:var(--text-2);cursor:pointer; }
+    .intent-confirm { flex:1;height:44px;border-radius:10px;border:none;background:var(--navy);color:#E5E7EB;font-family:var(--font);font-size:14px;font-weight:600;cursor:pointer;transition:opacity .15s; }
+    .intent-confirm:hover { opacity:.88; }
+    /* Signed-in pill */
+    .signed-in-pill { display:flex;align-items:center;gap:8px;background:rgba(0,217,191,.1);border:1px solid rgba(0,217,191,.3);border-radius:20px;padding:6px 14px;font-size:13px;font-weight:600;color:#007a72; }
+    .signed-in-pill .avatar { width:24px;height:24px;border-radius:50%;background:var(--teal);color:var(--navy);font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0; }
+    /* Intent badge on cart item */
+    .intent-tag { font-size:10px;font-weight:700;padding:2px 7px;border-radius:10px;display:inline-block;margin-top:3px; }
+    .intent-tag.self { background:rgba(0,217,191,.12);color:#007a72; }
+    .intent-tag.gift { background:rgba(253,184,0,.2);color:#8a6200; }
+    /* Auto-redeem notice */
+    .auto-redeem-notice { background:rgba(0,217,191,.08);border:1.5px solid rgba(0,217,191,.25);border-radius:10px;padding:12px 16px;display:flex;align-items:flex-start;gap:10px;margin-bottom:16px; }
+    .auto-redeem-notice .arn-icon { font-size:20px;flex-shrink:0; }
+    .auto-redeem-notice .arn-text .t { font-size:13px;font-weight:700;color:var(--text-1); }
+    .auto-redeem-notice .arn-text .s { font-size:12px;color:var(--text-3);margin-top:2px; }
+    .filter-bar { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:40px; }
+    .filter-btn { height:38px; padding:0 18px; border-radius:20px; border:1.5px solid var(--border); background:var(--white); font-family:var(--font); font-size:13px; font-weight:600; color:var(--text-3); cursor:pointer; transition:all .18s; white-space:nowrap; display:flex; align-items:center; gap:7px; }
+    .filter-btn:hover { border-color:#D1D5DB; color:var(--text-1); }
+    .filter-btn.active { background:var(--navy); border-color:var(--navy); color:#fff; }
+    .filter-section { transition:opacity .25s; }
+    .filter-section.hidden { display:none; }
+
+    /* ── BACK LINK ── */
+    .back-link { display: inline-flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 500; color: var(--text-3); cursor: pointer; padding: 8px 0; transition: color .2s; margin-bottom: 8px; background: none; border: none; font-family: var(--font); }
+    .back-link:hover { color: var(--text-1); }
+
+    @media (max-width: 768px) {
+      .checkout-wrap { grid-template-columns: 1fr; }
+      .payment-methods { grid-template-columns: 1fr; }
+      .store-hero { flex-direction: column; }
+      .app-redeem { flex-direction: column; align-items: center; }
+      .topnav { padding: 0 16px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- TOP NAV -->
+<nav class="topnav">
+  <div class="topnav-logo" style="display:flex;align-items:center;gap:10px;"><img src="../assets/logo/syllabi-icon.png" alt="Syllabi" style="width:40px;height:40px;border-radius:10px;"><span style="font-size:16px;font-weight:700;color:var(--text-1);letter-spacing:-0.2px;">Syllabi Store</span></div>
+  <div class="topnav-right">
+    <button class="cart-btn" onclick="toggleCart()">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M6 2L3 6V20C3 21.1 3.9 22 5 22H19C20.1 22 21 21.1 21 20V6L18 2H6ZM9 17C8.4 17 8 16.6 8 16C8 15.4 8.4 15 9 15C9.6 15 10 15.4 10 16C10 16.6 9.6 17 9 17ZM15 17C14.4 17 14 16.6 14 16C14 15.4 14.4 15 15 15C15.6 15 16 15.4 16 16C16 16.6 15.6 17 15 17ZM3 6H21" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+      Cart <span class="cart-badge" id="cartBadge">0</span>
+    </button>
+    <button class="sign-btn" id="signBtn" onclick="toggleSignIn()">Sign in</button>
+  </div>
+</nav>
+
+<!-- SIGN-IN MODAL -->
+<div class="signin-overlay" id="signinOverlay">
+  <div class="signin-modal">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px;">
+      <img src="../assets/logo/syllabi-icon.png" style="width:36px;height:36px;border-radius:9px;" alt="">
+      <span style="font-size:16px;font-weight:700;color:var(--navy);">Sign in to Syllabi</span>
+    </div>
+    <div class="sm-demo-note">👀 Demo mode — enter anything to sign in as Ahmed</div>
+    <h3>Welcome back</h3>
+    <p class="sm-sub">Sign in to auto-unlock subjects after purchase</p>
+    <div class="sm-group">
+      <label class="sm-label">Email</label>
+      <input class="sm-input" type="email" placeholder="ahmed@syllabi.mv" value="ahmed@syllabi.mv">
+    </div>
+    <div class="sm-group">
+      <label class="sm-label">Password</label>
+      <input class="sm-input" type="password" placeholder="••••••••" value="password">
+    </div>
+    <button class="signin-submit" onclick="doSignIn()">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M15 3H19C20.1 3 21 3.9 21 5V19C21 20.1 20.1 21 19 21H15M10 17L15 12L10 7M15 12H3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      Sign in
+    </button>
+    <button class="signin-cancel" onclick="document.getElementById('signinOverlay').classList.remove('open')">Cancel</button>
+  </div>
+</div>
+
+<!-- INTENT MODAL -->
+<div class="intent-overlay" id="intentOverlay">
+  <div class="intent-modal">
+    <h3 id="intentTitle">Who is this for?</h3>
+    <p id="intentSubtitle">Choose how you'd like to use this purchase.</p>
+    <div class="intent-options">
+      <div class="intent-opt sel" id="intentSelf" onclick="selectIntent('self')">
+        <div class="intent-opt-icon" style="background:rgba(0,217,191,.1)">👤</div>
+        <div>
+          <div class="intent-opt-title">For myself</div>
+          <div class="intent-opt-sub" id="intentSelfSub">Unlock subject on my account</div>
+        </div>
+      </div>
+      <div class="intent-opt" id="intentGift" onclick="selectIntent('gift')">
+        <div class="intent-opt-icon" style="background:rgba(253,184,0,.15)">🎁</div>
+        <div>
+          <div class="intent-opt-title">As a gift</div>
+          <div class="intent-opt-sub">Generate a redeem code to share</div>
+        </div>
+      </div>
+    </div>
+    <div class="intent-actions">
+      <button class="intent-cancel" onclick="closeIntent()">Cancel</button>
+      <button class="intent-confirm" onclick="confirmIntent()">Add to cart</button>
+    </div>
+  </div>
+</div>
+
+<!-- CART DRAWER OVERLAY -->
+<div class="drawer-overlay" id="drawerOverlay" onclick="toggleCart()"></div>
+
+<!-- CART DRAWER -->
+<div class="cart-drawer" id="cartDrawer">
+  <div class="drawer-header">
+    <h2>Your Cart</h2>
+    <button class="close-btn" onclick="toggleCart()">✕</button>
+  </div>
+  <div class="drawer-items" id="drawerItems">
+    <div class="drawer-empty">
+      <div class="empty-icon">🛒</div>
+      <p>Your cart is empty</p>
+    </div>
+  </div>
+  <div class="drawer-footer" id="drawerFooter" style="display:none">
+    <div class="cart-total-row">
+      <span class="cart-total-label">Total</span>
+      <span class="cart-total-price" id="cartTotal">MVR 0</span>
+    </div>
+    <button class="checkout-btn" onclick="goToCheckout()">Proceed to Checkout →</button>
+  </div>
+</div>
+
+<!-- ORDERS SCREEN -->
+<div class="screen" id="screen-orders">
+  <div class="orders-wrap">
+    <div class="orders-header">
+      <button class="back-link" onclick="showScreen('screen-store')" style="margin:0">←</button>
+      <h2>My Orders</h2>
+    </div>
+    <div id="orderHistoryList"></div>
+  </div>
+</div>
+
+<!-- SCREEN: STORE -->
+<div class="screen active" id="screen-store">
+  <div class="store-wrap">
+    <div class="store-hero">
+      <!-- Left: identity + heading -->
+      <div style="flex:1.4">
+        <div class="hero-badge">🇲🇻 Official Syllabi Store</div>
+        <p style="font-size:clamp(22px,2.8vw,34px);color:#fff;margin-bottom:8px;font-weight:800;letter-spacing:-0.3px;">Edtech Store for the Maldives</p>
+        <h1 style="font-size:clamp(14px,1.4vw,18px);font-weight:400;line-height:1.4;letter-spacing:0;color:rgba(255,255,255,0.5);margin-bottom:22px;">Syllabi &mdash; Your Study Companion</h1>
+        <!-- Category pills -->
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px">
+          <div style="background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);border-radius:10px;padding:10px 14px;display:flex;align-items:center;gap:10px;cursor:pointer" onclick="filterStore('digital',document.querySelectorAll('.filter-btn')[1])">
+            <div style="width:32px;height:32px;border-radius:8px;background:rgba(0,217,191,0.2);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0">⭐</div>
+            <div><div style="font-size:12px;font-weight:700;color:#fff">Redeem Codes</div><div style="font-size:11px;color:rgba(255,255,255,0.45)">Subjects from MVR 79</div></div>
+          </div>
+          <div style="background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);border-radius:10px;padding:10px 14px;display:flex;align-items:center;gap:10px;cursor:pointer" onclick="filterStore('games',document.querySelectorAll('.filter-btn')[2])">
+            <div style="width:32px;height:32px;border-radius:8px;background:rgba(107,128,255,0.25);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0">🎮</div>
+            <div><div style="font-size:12px;font-weight:700;color:#fff">Games &amp; Printed</div><div style="font-size:11px;color:rgba(255,255,255,0.45)">From MVR 99</div></div>
+          </div>
+          <div style="background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);border-radius:10px;padding:10px 14px;display:flex;align-items:center;gap:10px;cursor:pointer" onclick="filterStore('merch',document.querySelectorAll('.filter-btn')[3])">
+            <div style="width:32px;height:32px;border-radius:8px;background:rgba(253,184,0,0.2);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0">🛍️</div>
+            <div><div style="font-size:12px;font-weight:700;color:#fff">Merchandise</div><div style="font-size:11px;color:rgba(255,255,255,0.45)">Mugs, flasks &amp; more</div></div>
+          </div>
+        </div>
+      </div>
+      <!-- Right: how it works mini-flow -->
+      <div style="display:flex;flex-direction:column;gap:0;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:16px;padding:20px 22px;min-width:220px;max-width:260px">
+        <div style="font-size:11px;font-weight:700;color:rgba(255,255,255,0.4);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:14px">How it works</div>
+        <div style="display:flex;flex-direction:column;gap:0">
+          <div style="display:flex;align-items:flex-start;gap:10px;padding-bottom:12px;position:relative">
+            <div style="width:28px;height:28px;border-radius:50%;background:var(--teal);color:var(--navy);font-size:12px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0">1</div>
+            <div style="padding-top:3px"><div style="font-size:13px;font-weight:600;color:#fff">Browse &amp; buy</div><div style="font-size:11px;color:rgba(255,255,255,0.45);margin-top:1px">Choose your subject or plan</div></div>
+            <div style="position:absolute;left:13px;top:32px;width:2px;height:calc(100% - 4px);background:rgba(255,255,255,0.1)"></div>
+          </div>
+          <div style="display:flex;align-items:flex-start;gap:10px;padding-bottom:12px;position:relative">
+            <div style="width:28px;height:28px;border-radius:50%;background:rgba(0,217,191,0.2);color:var(--teal);font-size:12px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0">2</div>
+            <div style="padding-top:3px"><div style="font-size:13px;font-weight:600;color:#fff">Get your code</div><div style="font-size:11px;color:rgba(255,255,255,0.45);margin-top:1px">Receive redeem code instantly</div></div>
+            <div style="position:absolute;left:13px;top:32px;width:2px;height:calc(100% - 4px);background:rgba(255,255,255,0.1)"></div>
+          </div>
+          <div style="display:flex;align-items:flex-start;gap:10px">
+            <div style="width:28px;height:28px;border-radius:50%;background:rgba(0,217,191,0.2);color:var(--teal);font-size:12px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0">3</div>
+            <div style="padding-top:3px"><div style="font-size:13px;font-weight:600;color:#fff">Activate in app</div><div style="font-size:11px;color:rgba(255,255,255,0.45);margin-top:1px">Settings → Redeem Code → done</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="filter-bar">
+      <button class="filter-btn active" onclick="filterStore('all',this)">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M3 6H21M6 12H18M10 18H14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        All products
+      </button>
+      <button class="filter-btn" onclick="filterStore('digital',this)">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+        Redeem Codes
+      </button>
+      <button class="filter-btn" onclick="filterStore('games',this)">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><rect x="2" y="6" width="20" height="14" rx="3" stroke="currentColor" stroke-width="1.8"/><path d="M7 13H11M9 11V15M15 13H15.01M17 13H17.01" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+        Games &amp; Printed
+      </button>
+      <button class="filter-btn" onclick="filterStore('merch',this)">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M6 2L3 6V20C3 21.1 3.9 22 5 22H19C20.1 22 21 21.1 21 20V6L18 2H6Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M3 6H21M9 10C9 11.7 10.3 13 12 13C13.7 13 15 11.7 15 10" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+        Syllabi Merchandise
+      </button>
+    </div>
+    <div id="filterHint" style="margin-bottom:16px;min-height:24px;"><span id="filterHintText" style="font-size:13px;font-weight:500;color:rgb(0,9,56);opacity:0;transition:opacity .2s;display:inline-flex;align-items:center;gap:6px;"></span></div>
+
+    <div class="filter-section" id="section-digital">
+      <div class="store-section-title">📚 Individual Subjects</div>
+      <div class="products-grid" id="productsGrid"></div>
+      <div class="store-section-title">⭐ Premium Plans</div>
+      <div class="products-grid" id="premiumGrid"></div>
+    </div>
+
+    <div class="filter-section" id="section-games">
+      <div class="store-section-title">🎮 Games &amp; Printed Materials</div>
+      <p style="font-size:14px;color:var(--text-3);margin:-12px 0 20px">Physical study games and printed resources — ships within the Maldives.</p>
+      <div class="games-grid" id="gamesGrid"></div>
+    </div>
+
+    <div class="filter-section" id="section-merch">
+      <div class="store-section-title">🛍️ Syllabi Merchandise</div>
+      <p style="font-size:14px;color:var(--text-3);margin:-12px 0 20px">Official Syllabi gear — ships within the Maldives.</p>
+      <div class="games-grid" id="merchGrid"></div>
+    </div>
+  </div>
+</div>
+
+<!-- SCREEN: CHECKOUT -->
+<div class="screen" id="screen-checkout">
+  <div class="checkout-wrap">
+    <div class="checkout-left">
+      <button class="back-link" onclick="showScreen('screen-store'); toggleCart()">← Back to store</button>
+      <div class="checkout-section">
+        <div class="section-head"><div class="section-step">1</div>Account details</div>
+        <div class="form-row" style="margin-bottom:12px">
+          <div class="form-group"><label>Full name</label><input class="form-input" placeholder="Ahmed Mohamed" value="Ahmed Mohamed"></div>
+          <div class="form-group"><label>Email address</label><input class="form-input" placeholder="ahmed@example.com" value="ahmed@syllabi.mv"></div>
+        </div>
+        <div class="form-group"><label>Syllabi username</label><input class="form-input" placeholder="@username" value="@ahmed_mv" style="width:240px"></div>
+      </div>
+      <div class="checkout-section" id="shippingSection" style="display:none">
+        <div class="section-head"><div class="section-step">2</div>Shipping address <span style="font-size:12px;font-weight:500;color:var(--text-3);margin-left:6px">Physical items in cart</span></div>
+        <div class="form-row" style="margin-bottom:12px">
+          <div class="form-group"><label>Full name</label><input class="form-input" placeholder="Ahmed Mohamed" value="Ahmed Mohamed"></div>
+          <div class="form-group"><label>Phone</label><input class="form-input" placeholder="+960 7xx xxxx" value="+960 777 1234"></div>
+        </div>
+        <div class="form-row" style="margin-bottom:12px">
+          <div class="form-group"><label>Island / City</label><input class="form-input" placeholder="e.g. Malé" value="Malé"></div>
+          <div class="form-group"><label>Atoll</label><input class="form-input" placeholder="e.g. Kaafu" value="Kaafu"></div>
+        </div>
+        <div class="form-group"><label>Address / House name</label><input class="form-input" placeholder="House name, street" value="Orchid Magu, H. Sunflower" style="width:100%"></div>
+        <div style="margin-top:12px;background:rgba(253,184,0,0.08);border:1px solid rgba(253,184,0,0.3);border-radius:8px;padding:10px 14px;font-size:13px;color:#8a6200;display:flex;align-items:center;gap:8px">
+          <span>🚚</span> Delivery within Maldives — 3 to 5 business days after dispatch.
+        </div>
+      </div>
+      <div class="checkout-section">
+        <div class="section-head"><div class="section-step" id="paymentStep">2</div>Payment method</div>
+        <div class="payment-methods" id="paymentMethods">
+          <div class="payment-method selected" data-method="bml-pay" onclick="selectPayment(this)">
+            <div class="pm-icon" style="background:#003087;color:white;font-size:10px;font-weight:800">BML</div>
+            <div><div class="pm-name">BML Pay</div><div class="pm-sub">BML card / internet banking</div></div>
+          </div>
+          <div class="payment-method" data-method="mfaisaa" onclick="selectPayment(this)">
+            <div class="pm-icon" style="background:#00A859;color:white;font-size:10px;font-weight:800">MF</div>
+            <div><div class="pm-name">M-Faisaa</div><div class="pm-sub">Mobile wallet</div></div>
+          </div>
+          <div class="payment-method" data-method="fahipay" onclick="selectPayment(this)">
+            <div class="pm-icon" style="background:#E63946;color:white;font-size:10px;font-weight:800">FP</div>
+            <div><div class="pm-name">FahiPay</div><div class="pm-sub">Fast digital payment</div></div>
+          </div>
+          <div class="payment-method" data-method="bank" onclick="selectPayment(this)">
+            <div class="pm-icon" style="background:#F3F4F6;font-size:18px">🏦</div>
+            <div><div class="pm-name">Bank Transfer</div><div class="pm-sub">Manual — 1-2 business days</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <div class="order-summary">
+        <div class="os-title">Order Summary</div>
+        <div class="os-items" id="orderItems"></div>
+        <div class="os-divider"></div>
+        <div class="os-total-row">
+          <span class="os-total-label">Total</span>
+          <span class="os-total-price" id="orderTotal">MVR 0</span>
+        </div>
+        <button class="pay-btn" onclick="goToSuccess()">Pay Now ✦</button>
+        <div class="secure-note">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M12 2L4 6V12C4 16.4 7.6 20.3 12 21C16.4 20.3 20 16.4 20 12V6L12 2Z" stroke="#9CA3AF" stroke-width="1.8" stroke-linejoin="round"/></svg>
+          Secured by 256-bit SSL encryption
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SCREEN: SUCCESS -->
+<div class="screen" id="screen-success">
+  <div class="success-wrap">
+    <div class="success-banner">
+      <div class="success-icon">✓</div>
+      <h2>Payment successful!</h2>
+      <p>Your purchase is confirmed. Your subject has been unlocked.</p>
+    </div>
+
+    <div class="unlock-card">
+      <div class="unlock-icon" id="unlockIcon">🔓</div>
+      <div class="unlock-text">
+        <h4 id="unlockTitle">Purchase confirmed</h4>
+        <p id="unlockDesc">Open the Syllabi app — your content is already available.</p>
+      </div>
+    </div>
+
+    <div class="code-card">
+      <h3>Your Redeem Code</h3>
+      <p>Share this code or enter it on another account to transfer access.</p>
+      <div class="code-block">
+        <div class="code-label">Activation Code</div>
+        <div class="code-value" id="redeemCode">SYL-ISLM-X7K2-P9M4</div>
+        <div class="code-product" id="codeProduct">A-Level Islam · Valid 1 year</div>
+      </div>
+      <button class="copy-btn" onclick="copyCode()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><rect x="9" y="9" width="13" height="13" rx="2" stroke="currentColor" stroke-width="1.8"/><path d="M5 15H4C2.9 15 2 14.1 2 13V4C2 2.9 2.9 2 4 2H13C14.1 2 15 2.9 15 4V5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+        Copy code
+      </button>
+    </div>
+
+    <div class="redeem-steps">
+      <h3>How to redeem in the app</h3>
+      <div class="step-list">
+        <div class="step-item done"><div class="step-num">✓</div><div class="step-text"><div class="st">Purchase complete</div><div class="ss">Payment confirmed and processed</div></div></div>
+        <div class="step-item done"><div class="step-num">✓</div><div class="step-text"><div class="st">Instant account unlock</div><div class="ss">Subject already unlocked if you're logged in</div></div></div>
+        <div class="step-item"><div class="step-num">3</div><div class="step-text"><div class="st">Open the Syllabi app</div><div class="ss">Tap Learn → see your new subject</div></div></div>
+        <div class="step-item"><div class="step-num">4</div><div class="step-text"><div class="st">Or enter code manually</div><div class="ss">Settings → Redeem Code → Activate</div></div></div>
+      </div>
+    </div>
+
+    <div class="app-redeem">
+      <div class="app-phone">
+        <div class="mini-phone">
+          <div class="mini-notch"></div>
+          <div class="mini-screen">
+            <div class="ms-back">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M15 19L9 12L15 5" stroke="#374151" stroke-width="2" stroke-linecap="round"/></svg>
+              <img src="../assets/logo/syllabi-icon.png" alt="" style="width:14px;height:14px;border-radius:3px;">
+              <span class="ms-header">Redeem Code</span>
+            </div>
+            <div class="ms-card">
+              <div class="ms-label">Enter your activation code</div>
+              <div class="ms-input" id="miniCodeDisplay">SYL-ISLM-X7K2-P9M4</div>
+              <div class="ms-btn"><span>Activate →</span></div>
+            </div>
+            <div class="ms-success">
+              <div class="ms-emoji">🎉</div>
+              <div class="ms-t">A-Level Islam Unlocked!</div>
+              <div class="ms-s">Valid until Jun 2026</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="app-phone-info">
+        <h3>Redeem inside the app</h3>
+        <p>If automatic unlock doesn't work, or you're gifting this to someone, they can enter the code directly:</p>
+        <div class="path-steps">
+          <div class="path-step"><span class="ps-arrow">→</span> Open Syllabi app</div>
+          <div class="path-step"><span class="ps-arrow">→</span> Tap <strong>You</strong> (bottom nav)</div>
+          <div class="path-step"><span class="ps-arrow">→</span> Settings → <strong>Redeem Code</strong></div>
+          <div class="path-step"><span class="ps-arrow">→</span> Enter code → <strong>Activate</strong></div>
+        </div>
+      </div>
+    </div>
+
+    <div style="text-align:center">
+      <button class="back-link" onclick="resetAndGoHome()" style="margin:0 auto">← Back to store</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  // ── Data ──
+  const PRODUCTS = [
+    { id:'islam-o', name:'O-Level Islam', icon:'🕌', color:'rgba(0,217,191,0.1)', price:79, badge:'popular', desc:'Complete GCE O Level Islam curriculum', features:['8 Units, 120 Lessons','5 Quiz types','Past papers included','1 year access'], code:'ISLM', tag:'O Level' },
+    { id:'islam-a', name:'A-Level Islam', icon:'🕌', color:'rgba(107,128,255,0.1)', price:79, badge:'', desc:'HSC A Level Islam — full content', features:['10 Units, 150 Lessons','6 Quizzes','Marking schemes','1 year access'], code:'ISLA', tag:'A Level' },
+    { id:'dhivehi-o', name:'Dhivehi GCE O Level', icon:'📚', color:'rgba(253,184,0,0.12)', price:79, badge:'', desc:'Dhivehi language — O Level track', features:['12 Units, 130 Lessons','4 Quizzes','Grammar resources','1 year access'], code:'DHVO', tag:'O Level' },
+    { id:'dhivehi-a', name:'Dhivehi GCE A Level', icon:'📗', color:'rgba(0,217,191,0.1)', price:79, badge:'new', desc:'Advanced Dhivehi language & literature', features:['15 Units, 200 Lessons','10 Quizzes','Literature analysis','1 year access'], code:'DHVA', tag:'A Level' },
+  ];
+  const MERCH = [
+    { id:'mug', name:'Syllabi Mug', icon:'☕', img:'../assets/products/mug.svg', color:'rgba(0,9,56,0.06)', price:89, badge:'', desc:'Classic 11oz ceramic mug with the Syllabi logo. Start every study session right.', features:['11oz ceramic', 'Dishwasher safe', 'Navy + teal Syllabi branding', 'Ships in 3–5 days'], code:'MUG', tag:'Merch', physical:true },
+    { id:'flask', name:'Syllabi Vacuum Flask', icon:'🧃', img:'../assets/products/flask.svg', color:'rgba(0,217,191,0.1)', price:199, badge:'popular', desc:'500ml stainless steel vacuum flask. Keeps drinks hot 12hrs, cold 24hrs.', features:['500ml capacity', '12h hot / 24h cold', 'Syllabi branded lid & body', 'Ships in 3–5 days'], code:'FLSK', tag:'Merch', physical:true },
+
+  ];
+  const GAMES = [
+    { id:'flashcards-islam-o', name:'Islam O Level Flashcard Game', img:'', price:149, badge:'new', desc:'80-card illustrated flashcard set covering all O Level Islam topics. Play solo or with friends.', features:['80 double-sided cards','O Level syllabus aligned','Answer key booklet','Durable card stock'], physical:true },
+    { id:'flashcards-islam-a', name:'Islam A Level Flashcard Game', img:'', price:169, badge:'', desc:'Advanced 100-card set for HSC A Level Islam. Ideal for group revision sessions.', features:['100 double-sided cards','A Level syllabus aligned','Discussion prompts included','Durable card stock'], physical:true },
+    { id:'flashcards-dhivehi', name:'Dhivehi Flashcard Game', img:'', price:149, badge:'', desc:'Master Dhivehi grammar and vocabulary with this 80-card game set.', features:['80 double-sided cards','Grammar & vocabulary focus','O & A Level topics','Durable card stock'], physical:true },
+    { id:'workbook-islam', name:'Islam Revision Workbook', img:'', price:99, badge:'', desc:'Printed revision workbook with practice questions, mind maps, and answer spaces.', features:['120 pages','O Level & A Level sections','Fill-in exercises','A4 spiral bound'], physical:true },
+  ];
+  const PREMIUM = [
+    { id:'bundle', name:'Premium Bundle', icon:'⭐', color:'rgba(253,184,0,0.15)', price:199, badge:'best', desc:'All current and future subjects included', features:['All subjects unlocked','Priority quiz updates','Exclusive challenges','National leaderboard access','1 year access'], code:'PREM', tag:'Bundle' },
+    { id:'annual', name:'Annual Premium', icon:'👑', color:'rgba(0,9,56,0.06)', price:1799, badge:'', desc:'Full year of everything — best value', features:['Everything in Premium Bundle','Unlimited subject access','School/family sharing (up to 3)','24/7 support','1 year access'], code:'ANPL', tag:'Annual' },
+  ];
+
+  // ── Order history ──
+  const ORDER_HISTORY = [
+    { id:'ORD-2025-0041', date:'12 May 2025', status:'complete', items:[{name:'Islam GCE O Level', icon:'🕌', color:'rgba(0,217,191,0.1)', price:79}], code:'SYL-ISLM-K3P9-M2X7', intent:'self' },
+    { id:'ORD-2025-0038', date:'2 Apr 2025',  status:'complete', items:[{name:'Dhivehi GCE O Level', icon:'📚', color:'rgba(253,184,0,0.1)', price:79},{name:'Syllabi Vacuum Flask', icon:'🧃', color:'rgba(0,217,191,0.1)', price:199}], code:null, intent:'self' },
+    { id:'ORD-2025-0031', date:'18 Feb 2025', status:'complete', items:[{name:'A-Level Islam', icon:'🕌', color:'rgba(107,128,255,0.1)', price:79}], code:'SYL-ISLA-A7B2-C4D8', intent:'gift' },
+  ];
+  let liveOrders = [];
+
+  function renderOrders() {
+    const all = [...liveOrders, ...ORDER_HISTORY];
+    const el = document.getElementById('orderHistoryList');
+    if (!el) return;
+    if (all.length === 0) { el.innerHTML = '<div class="orders-empty"><div class="oe-icon">📦</div><p>No orders yet</p></div>'; return; }
+    el.innerHTML = all.map(o => `
+      <div class="order-card">
+        <div class="order-top">
+          <div><div class="order-id">${o.id}</div><div class="order-date">${o.date}</div></div>
+          <span class="order-status ${o.status}">${o.status==='complete'?'✓ Complete':'⏳ Pending'}</span>
+        </div>
+        <div class="order-items-list">
+          ${o.items.map(i=>`
+            <div class="order-item-row">
+              <div class="order-item-icon" style="background:${i.color}">${i.icon}</div>
+              <div class="order-item-name">${i.name}${o.intent==='gift'?' <span style="font-size:11px;color:#8a6200;background:rgba(253,184,0,.15);padding:2px 7px;border-radius:10px;margin-left:4px">🎁 Gift</span>':''}</div>
+              <div class="order-item-price">MVR ${i.price}</div>
+            </div>`).join('')}
+        </div>
+        <div class="order-footer">
+          <div><div class="order-total-label">Total</div><div class="order-total-val">MVR ${o.items.reduce((s,i)=>s+i.price,0)}</div></div>
+          ${o.code
+            ? `<div class="order-code-pill" onclick="navigator.clipboard.writeText('${o.code}').catch(()=>{})"><svg width="12" height="12" viewBox="0 0 24 24" fill="none"><rect x="9" y="9" width="13" height="13" rx="2" stroke="currentColor" stroke-width="1.8"/><path d="M5 15H4C2.9 15 2 14.1 2 13V4C2 2.9 2.9 2 4 2H13C14.1 2 15 2.9 15 4V5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>${o.code}</div>`
+            : '<span style="font-size:12px;color:var(--pos)">Auto-unlocked ✓</span>'}
+        </div>
+      </div>`).join('');
+  }
+  function showOrders() { renderOrders(); showScreen('screen-orders'); }
+
+  let cart = [];
+  let selectedPayment = 'bml-pay';
+  let isSignedIn = false;
+  let pendingProduct = null;
+  let pendingIntent = 'self';
+
+  function toggleSignIn() {
+    if (isSignedIn) {
+      // Sign out
+      isSignedIn = false;
+      const el = document.getElementById('signBtnGroup') || document.getElementById('signBtn');
+      el.outerHTML = '<button class="sign-btn" id="signBtn" onclick="toggleSignIn()">Sign in</button>';
+    } else {
+      document.getElementById('signinOverlay').classList.add('open');
+    }
+  }
+  function doSignIn() {
+    isSignedIn = true;
+    document.getElementById('signinOverlay').classList.remove('open');
+    const el = document.getElementById('signBtn');
+    el.outerHTML = '<div style="display:flex;align-items:center;gap:8px" id="signBtnGroup"><div class="signed-in-pill" id="signBtn" onclick="toggleSignIn()" style="cursor:pointer"><div class="avatar">A</div>Ahmed</div><button class="cart-btn" onclick="showOrders()" style="gap:6px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M9 5H7C5.9 5 5 5.9 5 7V19C5 20.1 5.9 21 7 21H17C18.1 21 19 20.1 19 19V7C19 5.9 18.1 5 17 5H15M9 5C9 5.6 9.4 6 10 6H14C14.6 6 15 5.6 15 5M9 5C9 4.4 9.4 4 10 4H14C14.6 4 15 4.4 15 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>My Orders</button></div>';
+    const tip = document.createElement('div');
+    tip.style.cssText = 'position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#000938;color:#fff;padding:12px 20px;border-radius:12px;font-size:13px;font-weight:600;z-index:999;box-shadow:0 8px 24px rgba(0,0,0,.2);display:flex;align-items:center;gap:8px;white-space:nowrap';
+    tip.innerHTML = '🔓 Signed in as Ahmed — subjects will auto-unlock after purchase';
+    document.body.appendChild(tip);
+    setTimeout(() => tip.remove(), 3500);
+  }
+
+  function addToCart(id) {
+    const all = [...PRODUCTS, ...PREMIUM, ...GAMES, ...MERCH];
+    const p = all.find(x => x.id === id);
+    if (!p || cart.find(i => i.id === id)) return;
+    if (!p.physical) {
+      // Digital — ask intent
+      pendingProduct = p;
+      pendingIntent = 'self';
+      document.getElementById('intentTitle').textContent = `Who is "${p.name}" for?`;
+      document.getElementById('intentSelfSub').textContent = isSignedIn
+        ? 'Auto-unlock on your account instantly'
+        : 'Redeem code for your own account';
+      document.getElementById('intentSelf').classList.add('sel');
+      document.getElementById('intentGift').classList.remove('sel');
+      document.getElementById('intentOverlay').classList.add('open');
+    } else {
+      // Physical — straight to cart
+      cart.push({ ...p, intent: null, qty: 1 });
+      updateCartUI();
+      flashAddBtn(id);
+    }
+  }
+  function selectIntent(v) {
+    pendingIntent = v;
+    document.getElementById('intentSelf').classList.toggle('sel', v === 'self');
+    document.getElementById('intentGift').classList.toggle('sel', v === 'gift');
+  }
+  function closeIntent() {
+    document.getElementById('intentOverlay').classList.remove('open');
+    pendingProduct = null;
+  }
+  function confirmIntent() {
+    if (!pendingProduct) return;
+    cart.push({ ...pendingProduct, intent: pendingIntent, qty: 1 });
+    updateCartUI();
+    flashAddBtn(pendingProduct.id);
+    closeIntent();
+  }
+  function flashAddBtn(id) {
+    const btn = document.getElementById('btn-' + id);
+    if (btn) { btn.textContent = 'Added ✓'; btn.classList.add('added'); }
+    if (!document.getElementById('cartDrawer').classList.contains('open')) {
+      document.getElementById('cartDrawer').classList.add('open');
+      document.getElementById('drawerOverlay').classList.add('open');
+    }
+  }
+  function renderGames(list, containerId) {
+    const container = document.getElementById(containerId);
+    container.innerHTML = list.map(p => `
+      <div class="game-card" id="card-${p.id}">
+        <div class="game-img">
+          ${p.img
+            ? `<img src="${p.img}" alt="${p.name}">`
+            : `<div class="game-img-placeholder"><div class="ph-icon">📸</div><div class="ph-text">Photo coming soon</div></div>`
+          }
+          ${p.badge==='new' ? '<span class="game-badge-img product-badge new">New</span>' : ''}
+        </div>
+        <div class="game-body">
+          <div class="game-name">${p.name}</div>
+          <div class="game-desc">${p.desc}</div>
+          <div class="game-feats">${p.features.map(f=>`<span class="game-feat">${f}</span>`).join('')}</div>
+          <div class="game-footer">
+            <div class="game-price">MVR ${p.price}<span> + shipping</span></div>
+            <button class="add-btn" id="btn-${p.id}" onclick="addToCart('${p.id}')">${cart.find(i=>i.id===p.id)?'Added ✓':'Add to cart'}</button>
+          </div>
+        </div>
+      </div>
+    `).join('');
+  }
+  function renderMerch(list, containerId) {
+    const container = document.getElementById(containerId);
+    container.innerHTML = list.map(p => `
+      <div class="game-card" id="card-${p.id}">
+        <div class="game-img">
+          ${p.img
+            ? `<img src="${p.img}" alt="${p.name}">`
+            : `<div class="game-img-placeholder"><div class="ph-icon">${p.icon}</div><div class="ph-text">Photo coming soon</div></div>`
+          }
+          ${p.badge==='popular' ? '<span class="game-badge-img product-badge popular">Best seller</span>' : ''}
+        </div>
+        <div class="game-body">
+          <div class="game-name">${p.name}</div>
+          <div class="game-desc">${p.desc}</div>
+          <div class="game-feats">${p.features.map(f=>`<span class="game-feat">${f}</span>`).join('')}</div>
+          <div class="game-footer">
+            <div class="game-price">MVR ${p.price}<span> + shipping</span></div>
+            <button class="add-btn" id="btn-${p.id}" onclick="addToCart('${p.id}')">${cart.find(i=>i.id===p.id)?'Added ✓':'Add to cart'}</button>
+          </div>
+        </div>
+      </div>
+    `).join('');
+  }
+  const HINTS = {
+    all: '',
+    digital: 'Buy redeem codes for the Syllabi App',
+    games: 'Physical study games & printed materials — ships within the Maldives',
+    merch: 'Official Syllabi gear — ships within the Maldives',
+  };
+  function filterStore(type, btn) {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    const sections = { digital:'section-digital', games:'section-games', merch:'section-merch' };
+    if (type === 'all') {
+      Object.values(sections).forEach(id => document.getElementById(id).classList.remove('hidden'));
+    } else {
+      Object.entries(sections).forEach(([key, id]) => {
+        document.getElementById(id).classList.toggle('hidden', key !== type);
+      });
+    }
+    const hint = document.getElementById('filterHintText');
+    hint.textContent = HINTS[type] || '';
+    hint.style.opacity = HINTS[type] ? '1' : '0';
+  }
+
+  function renderProducts(list, containerId) {
+    const container = document.getElementById(containerId);
+    container.innerHTML = list.map(p => `
+      <div class="product-card ${p.badge==='best'?'premium':''}" id="card-${p.id}">
+        <div class="product-top">
+          <div class="product-icon" style="background:${p.color}">${p.icon}</div>
+          ${p.badge ? `<span class="product-badge ${p.badge}">${p.badge==='popular'?'Most popular':p.badge==='best'?'Best value':p.badge==='new'?'New':''}` : '<span></span>'}
+        </div>
+        <div class="product-name">${p.name}</div>
+        <div class="product-desc">${p.desc}</div>
+        <div class="product-features">${p.features.map(f=>`<div class="product-feature"><span class="feat-dot"></span>${f}</div>`).join('')}</div>
+        <div class="product-footer">
+          <div class="product-price">MVR ${p.price}<span>/yr</span></div>
+          <button class="add-btn" id="btn-${p.id}" onclick="addToCart('${p.id}')">${cart.find(i=>i.id===p.id)?'Added ✓':'Add to cart'}</button>
+        </div>
+      </div>
+    `).join('');
+  }
+  renderProducts(PRODUCTS, 'productsGrid');
+  renderProducts(PREMIUM, 'premiumGrid');
+  renderGames(GAMES, 'gamesGrid');
+  renderMerch(MERCH, 'merchGrid');
+
+  // ── Cart logic ──
+  function changeQty(id, delta) {
+    const item = cart.find(i=>i.id===id);
+    if (!item) return;
+    item.qty = Math.max(1, (item.qty||1) + delta);
+    updateCartUI();
+  }
+  function removeFromCart(id) {
+    cart = cart.filter(i=>i.id!==id);
+    const btn = document.getElementById('btn-'+id);
+    if (btn) { btn.textContent='Add to cart'; btn.classList.remove('added'); }
+    updateCartUI();
+  }
+  function updateCartUI() {
+    const badge = document.getElementById('cartBadge');
+    badge.textContent = cart.length;
+    const items = document.getElementById('drawerItems');
+    const footer = document.getElementById('drawerFooter');
+    const total = cart.reduce((s,i)=>s+i.price*(i.qty||1),0);
+    document.getElementById('cartTotal').textContent = 'MVR '+total;
+    if (cart.length===0) {
+      items.innerHTML = '<div class="drawer-empty"><div class="empty-icon">🛒</div><p>Your cart is empty</p></div>';
+      footer.style.display='none';
+    } else {
+      items.innerHTML = cart.map(i=>{
+        const intentTag = i.intent === 'self'
+          ? `<span class="intent-tag self">✓ For myself${isSignedIn ? ' — auto-unlock' : ''}</span>`
+          : i.intent === 'gift'
+          ? `<span class="intent-tag gift">🎁 As a gift — redeem code</span>`
+          : '';
+        return `
+        <div class="cart-item">
+          <div class="cart-item-icon" style="background:${i.color||'#F3F4F6'}">${i.icon||'📦'}</div>
+          <div class="cart-item-info">
+            <div class="cart-item-name">${i.name}</div>
+            <div class="cart-item-price">MVR ${i.price * (i.qty||1)}${i.physical?' + shipping':' · 1 year'}</div>
+            <div class="qty-stepper">
+              <button class="qty-btn" onclick="changeQty('${i.id}',-1)">−</button>
+              <span class="qty-val">${i.qty||1}</span>
+              <button class="qty-btn" onclick="changeQty('${i.id}',1)">+</button>
+            </div>
+            ${intentTag}
+          </div>
+          <button class="remove-btn" onclick="removeFromCart('${i.id}')">✕</button>
+        </div>`;
+      }).join('');
+      footer.style.display='block';
+    }
+  }
+  function toggleCart() {
+    const drawer = document.getElementById('cartDrawer');
+    const overlay = document.getElementById('drawerOverlay');
+    drawer.classList.toggle('open');
+    overlay.classList.toggle('open');
+  }
+
+  // ── Checkout ──
+  function goToCheckout() {
+    if (cart.length===0) return;
+    toggleCart();
+    const hasPhysical = cart.some(i=>i.physical);
+    const hasSelfDigital = cart.some(i=>!i.physical && i.intent==='self');
+    document.getElementById('shippingSection').style.display = hasPhysical ? 'block' : 'none';
+    document.getElementById('paymentStep').textContent = hasPhysical ? '3' : '2';
+    // Auto-redeem notice
+    let noticeEl = document.getElementById('autoRedeemNotice');
+    if (!noticeEl) {
+      noticeEl = document.createElement('div');
+      noticeEl.id = 'autoRedeemNotice';
+      const paySection = document.getElementById('paymentStep').closest('.checkout-section');
+      paySection.parentNode.insertBefore(noticeEl, paySection);
+    }
+    if (isSignedIn && hasSelfDigital) {
+      noticeEl.innerHTML = `<div class="auto-redeem-notice"><div class="arn-icon">🔓</div><div class="arn-text"><div class="t">Subjects will be auto-unlocked</div><div class="s">You're signed in as Ahmed — selected subjects unlock instantly on your account after payment. No code needed.</div></div></div>`;
+    } else {
+      noticeEl.innerHTML = '';
+    }
+    const total = cart.reduce((s,i)=>s+i.price*(i.qty||1),0);
+    document.getElementById('orderTotal').textContent='MVR '+total;
+    document.getElementById('orderItems').innerHTML = cart.map(i=>{
+      const tag = i.intent==='gift' ? ' 🎁' : i.intent==='self' && isSignedIn ? ' ✓' : '';
+      return `<div class="os-item">
+        <div class="os-item-icon" style="background:${i.color||'#F3F4F6'}">${i.icon||'📦'}</div>
+        <div class="os-item-name">${i.name}${tag}</div>
+        <div class="os-item-price">MVR ${i.price}</div>
+      </div>`;
+    }).join('');
+    showScreen('screen-checkout');
+  }
+  function selectPayment(el) {
+    document.querySelectorAll('.payment-method').forEach(m=>m.classList.remove('selected'));
+    el.classList.add('selected');
+    selectedPayment = el.dataset.method;
+  }
+
+  // ── Success ──
+  function goToSuccess() {
+    const digitalItems = cart.filter(i=>!i.physical);
+    const first = digitalItems[0] || cart[0];
+    if (!first) return;
+    const hasGift = cart.some(i=>i.intent==='gift');
+    const hasSelf = cart.some(i=>i.intent==='self');
+    const autoUnlock = isSignedIn && hasSelf;
+    // Build unlock description
+    const selfNames = cart.filter(i=>i.intent==='self' && !i.physical).map(i=>i.name);
+    const giftNames = cart.filter(i=>i.intent==='gift').map(i=>i.name);
+    let unlockDesc = '';
+    if (autoUnlock && selfNames.length) unlockDesc += `${selfNames.join(' & ')} ${selfNames.length>1?'are':'is'} auto-unlocked on your account. `;
+    if (giftNames.length) unlockDesc += `Redeem code generated for ${giftNames.join(' & ')}.`;
+    document.getElementById('unlockDesc').textContent = unlockDesc || 'Open the Syllabi app — your content is available.';
+    // Success banner wording
+    document.querySelector('.success-banner h2').textContent = autoUnlock && !hasGift ? 'Subjects unlocked!' : 'Payment successful!';
+    document.querySelector('.success-banner p').textContent = autoUnlock && !hasGift
+      ? 'Your subjects are live on your account. Open the app and start learning.'
+      : 'Your purchase is confirmed. Use your redeem code in the app.';
+    // Code card visibility
+    const codeCard = document.querySelector('.code-card');
+    codeCard.style.display = hasGift || !isSignedIn ? 'block' : 'none';
+    if (hasGift || !isSignedIn) {
+      const codeFirst = cart.find(i=>i.intent==='gift') || first;
+      const chars='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+      const seg=()=>Array.from({length:4},()=>chars[Math.floor(Math.random()*chars.length)]).join('');
+      const code = `SYL-${(codeFirst.code||'CODE')}-${seg()}-${seg()}`;
+      document.getElementById('redeemCode').textContent = code;
+      document.getElementById('miniCodeDisplay').textContent = code;
+      document.getElementById('codeProduct').textContent = `${codeFirst.name} · Valid 1 year`;
+    }
+    showScreen('screen-success');
+    // Record live order
+    const orderId = 'ORD-2025-' + String(Math.floor(Math.random()*9000)+1000);
+    const today = new Date().toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});
+    liveOrders.unshift({ id:orderId, date:today, status:'complete', items:cart.filter(i=>!i.physical).map(i=>({name:i.name,icon:i.icon||'📦',color:i.color||'#F3F4F6',price:i.price})), code: cart.some(i=>i.intent==='gift')?(()=>{const c='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';const s=()=>Array.from({length:4},()=>c[Math.floor(Math.random()*c.length)]).join('');return `SYL-${(cart.find(i=>i.intent==='gift')||cart[0]).code||'CODE'}-${s()}-${s()}`;})():null, intent: cart.some(i=>i.intent==='gift')?'gift':'self' });
+    document.getElementById('unlockIcon').textContent = autoUnlock2 ? '🔓' : '🎁';
+    document.getElementById('unlockTitle').textContent = autoUnlock2
+      ? 'Subjects auto-unlocked on your account'
+      : 'Use your redeem code in the app';
+  }
+  function copyCode() {
+    const code = document.getElementById('redeemCode').textContent;
+    navigator.clipboard.writeText(code).catch(()=>{});
+    const btn = event.currentTarget;
+    btn.textContent = '✓ Copied!';
+    setTimeout(()=>{btn.innerHTML='<svg width="14" height="14" viewBox="0 0 24 24" fill="none"><rect x="9" y="9" width="13" height="13" rx="2" stroke="currentColor" stroke-width="1.8"/><path d="M5 15H4C2.9 15 2 14.1 2 13V4C2 2.9 2.9 2 4 2H13C14.1 2 15 2.9 15 4V5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg> Copy code';},2000);
+  }
+  function resetAndGoHome() {
+    cart=[];
+    [...PRODUCTS,...PREMIUM,...GAMES,...MERCH].forEach(p=>{
+      const btn=document.getElementById('btn-'+p.id);
+      if(btn){btn.textContent='Add to cart';btn.classList.remove('added');}
+    });
+    updateCartUI();
+    showScreen('screen-store');
+  }
+  function showScreen(id) {
+    document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    window.scrollTo({top:0,behavior:'smooth'});
+  }
+</script>
+<footer class="store-footer">
+  <div class="fi">
+    <div class="ft">
+      <div class="fl">
+        <img src="../assets/logo/syllabi-logo.png" alt="Syllabi">
+        <p class="ft-tag">The official Syllabi store — buy redeem codes, games, and merchandise for students in the Maldives.</p>
+        <div class="app-btns">
+          <a href="https://syllabi.mv" class="app-btn" target="_blank">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="white" stroke-width="1.8"/><path d="M2 12H22M12 2C9.3 7 9.3 17 12 22M12 2C14.7 7 14.7 17 12 22" stroke="white" stroke-width="1.8"/></svg>
+            syllabi.mv
+          </a>
+          <a href="#" class="app-btn">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.7 9.05 7.42c1.35.07 2.28.74 3.08.8 1.17-.24 2.29-.93 3.53-.84 1.5.12 2.63.72 3.37 1.84-3.08 1.84-2.56 5.89.44 7.03-.51 1.46-1.19 2.9-2.42 4.03z" fill="white"/></svg>
+            App Store
+          </a>
+          <a href="#" class="app-btn">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M3.18 23.18a2 2 0 01-.64-1.49V2.31c.1-.57.36-1.05.73-1.37L14.82 12 3.27 24.25l-.09-.07z" fill="#4285F4"/><path d="M18.68 16.26l-3.86-3.86v-.28l3.86-3.86.09.05 4.57 2.6c1.3.74 1.3 1.95 0 2.69l-4.57 2.6-.09.06z" fill="#FBBC04"/></svg>
+            Google Play
+          </a>
+        </div>
+      </div>
+      <div class="fc">
+        <h4>Store</h4>
+        <a href="#" onclick="filterStore('digital',document.querySelectorAll('.filter-btn')[1]);showScreen('screen-store');return false;">Redeem Codes</a>
+        <a href="#" onclick="filterStore('games',document.querySelectorAll('.filter-btn')[2]);showScreen('screen-store');return false;">Games &amp; Printed</a>
+        <a href="#" onclick="filterStore('merch',document.querySelectorAll('.filter-btn')[3]);showScreen('screen-store');return false;">Merchandise</a>
+      </div>
+      <div class="fc">
+        <h4>Syllabi</h4>
+        <a href="https://syllabi.mv" target="_blank">Main Website</a>
+        <a href="https://syllabi.mv" target="_blank">About Syllabi</a>
+        <a href="#">Contact Us</a>
+        <a href="#">Redeem Code</a>
+        <a href="#">Terms &amp; Privacy</a>
+      </div>
+    </div>
+    <div class="fb">
+      <p>© 2025 Syllabi. All rights reserved.</p>
+      <div class="fb-links">
+        <a href="#">Privacy Policy</a>
+        <a href="#">Terms of Service</a>
+        <a href="#">Refund Policy</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

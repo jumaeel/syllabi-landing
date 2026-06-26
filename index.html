@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Syllabi — Your Study Companion</title>
+  <link rel="icon" type="image/png" href="assets/logo/syllabi-icon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --navy: #000938;
+      --teal: #00D9BF;
+      --yellow: #FDB800;
+      --bg: #ffffff;
+      --bg2: #f5f6fa;
+      --t1: #0a0e2e;
+      --t2: #4b5563;
+      --t3: #9ca3af;
+      --border: #e5e7eb;
+      --font: 'Poppins', sans-serif;
+    }
+    html { scroll-behavior: smooth; }
+    body { font-family: var(--font); background: var(--bg); color: var(--t2); -webkit-font-smoothing: antialiased; }
+
+    /* NAV */
+    .nav-wrap {
+      position: sticky; top: 0; z-index: 100;
+      background: var(--navy);
+      padding: 10px 32px;
+    }
+    nav {
+      max-width: 960px; margin: 0 auto;
+      background: rgba(255,255,255,.10);
+      backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255,255,255,.18);
+      border-radius: 18px;
+      box-shadow: 0 4px 24px rgba(0,0,0,.25), inset 0 1px 0 rgba(255,255,255,.15);
+      padding: 0 20px; height: 56px;
+      display: flex; align-items: center; justify-content: space-between; gap: 16px;
+    }
+    .nav-logo { display: flex; align-items: center; gap: 9px; text-decoration: none; flex-shrink: 0; }
+    .nav-logo img { height: 32px; width: 32px; border-radius: 9px; object-fit: cover; }
+    .nav-logo-text { font-size: 17px; font-weight: 700; color: #fff; letter-spacing: -.3px; }
+    .nav-links { display: flex; gap: 2px; list-style: none; }
+    .nav-links a {
+      font-size: 14px; font-weight: 500; color: rgba(255,255,255,.75); text-decoration: none;
+      padding: 6px 13px; border-radius: 10px; transition: background .15s, color .15s;
+    }
+    .nav-links a:hover { color: #fff; background: rgba(255,255,255,.12); }
+    .nav-cta {
+      height: 38px; padding: 0 18px; border-radius: 10px; border: none;
+      background: #fff; color: var(--navy); font-family: var(--font);
+      font-size: 14px; font-weight: 700; cursor: pointer; text-decoration: none;
+      display: flex; align-items: center; gap: 6px; flex-shrink: 0;
+      box-shadow: 0 2px 10px rgba(0,0,0,.2); transition: opacity .15s, transform .15s;
+    }
+    .nav-cta:hover { opacity: .9; transform: translateY(-1px); }
+
+    /* HERO */
+    .hero {
+      background: var(--navy);
+      padding: 96px 48px 80px;
+    }
+    .hero-inner {
+      max-width: 1000px; margin: 0 auto;
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 64px; align-items: center;
+    }
+    .hero-tag {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: 12px; font-weight: 600; color: var(--teal);
+      margin-bottom: 20px;
+    }
+    .hero-tag-dot { width: 5px; height: 5px; background: var(--teal); border-radius: 50%; }
+    .hero h1 {
+      font-size: clamp(36px, 4.5vw, 60px); font-weight: 900;
+      color: #fff; line-height: 1.06; letter-spacing: -2px;
+      margin-bottom: 20px;
+    }
+    .hero h1 .accent { color: var(--teal); }
+
+    /* ── Swoosh underline accents ── */
+    .swoosh { position: relative; display: inline-block; color: var(--yellow); }
+    .swoosh::after {
+      content: ''; position: absolute; left: -3px; right: -5px; bottom: -8px; height: 10px;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 240 12' preserveAspectRatio='none'%3E%3Cpath d='M4 9 C50 2,110 1,170 6 C198 9,222 10,236 7' stroke='%23FDB800' stroke-width='3.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+      background-size: 100% 100%; background-repeat: no-repeat; pointer-events: none;
+    }
+    /* coral text + yellow underline */
+    .swoosh-coral { position: relative; display: inline-block; color: #E8622A; }
+    .swoosh-coral::after {
+      content: ''; position: absolute; left: -3px; right: -5px; bottom: -9px; height: 11px;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 240 13' preserveAspectRatio='none'%3E%3Cpath d='M2 10 C40 3,100 1,160 7 C190 10,220 11,238 8' stroke='%23FDB800' stroke-width='4' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+      background-size: 100% 100%; background-repeat: no-repeat; pointer-events: none;
+    }
+    /* inherit text color + purple underline */
+    .swoosh-purple { position: relative; display: inline-block; }
+    .swoosh-purple::after {
+      content: ''; position: absolute; left: -3px; right: -5px; bottom: -9px; height: 11px;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 240 13' preserveAspectRatio='none'%3E%3Cpath d='M2 10 C50 4,110 2,170 7 C200 10,222 11,238 8' stroke='%236B80FF' stroke-width='4' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+      background-size: 100% 100%; background-repeat: no-repeat; pointer-events: none;
+    }
+    .hero-sub {
+      font-size: 16px; color: rgba(255,255,255,.5);
+      line-height: 1.75; max-width: 400px; margin-bottom: 36px;
+    }
+    .hero-btns { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 48px; }
+    .btn-teal {
+      height: 48px; padding: 0 24px; border-radius: 10px; border: none;
+      background: var(--teal); color: var(--navy);
+      font-family: var(--font); font-size: 14px; font-weight: 700;
+      cursor: pointer; text-decoration: none;
+      display: inline-flex; align-items: center; gap: 7px;
+      transition: opacity .15s;
+    }
+    .btn-teal:hover { opacity: .88; }
+    .btn-ghost-dark {
+      height: 48px; padding: 0 20px; border-radius: 10px;
+      border: 1.5px solid rgba(255,255,255,.2); background: transparent;
+      color: rgba(255,255,255,.8); font-family: var(--font);
+      font-size: 14px; font-weight: 500; cursor: pointer; text-decoration: none;
+      display: inline-flex; align-items: center; gap: 7px;
+      transition: border-color .15s;
+    }
+    .btn-ghost-dark:hover { border-color: rgba(255,255,255,.5); }
+    .hero-stats { display: flex; gap: 28px; }
+    .hero-stat .n { font-size: 24px; font-weight: 800; color: #fff; letter-spacing: -0.5px; }
+    .hero-stat .l { font-size: 11px; color: rgba(255,255,255,.4); margin-top: 2px; }
+
+    /* phone */
+    .phone-wrap { display: flex; justify-content: center; align-items: center; position: relative; }
+    .phone {
+      width: 240px; border-radius: 38px; overflow: hidden;
+      background: #0a0e3a; border: 6px solid #1a2260;
+      box-shadow: 0 40px 80px rgba(0,0,0,.6);
+    }
+    .phone-top { height: 22px; background: #0a0e3a; display: flex; justify-content: center; align-items: flex-end; padding-bottom: 4px; }
+    .phone-pill { width: 72px; height: 12px; background: #000; border-radius: 6px; }
+    .phone img { width: 100%; display: block; }
+
+    /* chips */
+    .chip {
+      position: absolute;
+      background: #fff; border-radius: 14px;
+      padding: 10px 14px;
+      display: flex; align-items: center; gap: 10px;
+      box-shadow: 0 8px 32px rgba(0,0,0,.15); white-space: nowrap;
+    }
+    .chip-icon { font-size: 18px; width: 34px; height: 34px; background: var(--bg2); border-radius: 8px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .chip .ct { font-size: 13px; font-weight: 700; color: var(--t1); }
+    .chip .cs { font-size: 11px; color: var(--t3); margin-top: 1px; }
+    .chip-1 { right: -16px; top: 64px; animation: float 3.2s ease-in-out infinite; }
+    .chip-2 { left: -16px; bottom: 80px; animation: float 3.8s ease-in-out infinite .6s; }
+    @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
+
+    /* PROOF */
+    .proof {
+      border-bottom: 1px solid var(--border);
+      padding: 24px 48px;
+      display: flex; align-items: center; justify-content: center;
+      gap: 48px; flex-wrap: wrap;
+    }
+    .proof-label { font-size: 12px; font-weight: 600; color: var(--t3); text-transform: uppercase; letter-spacing: .08em; }
+    .proof-sep { width: 1px; height: 24px; background: var(--border); }
+    .proof-stat .n { font-size: 20px; font-weight: 800; color: var(--t1); letter-spacing: -.5px; }
+    .proof-stat .l { font-size: 11px; color: var(--t3); margin-top: 1px; }
+    .proof-stats { display: flex; gap: 36px; flex-wrap: wrap; justify-content: center; }
+
+    /* FEATURES */
+    .features {
+      max-width: 960px; margin: 0 auto;
+      padding: 80px 48px;
+    }
+    .section-label {
+      font-size: 12px; font-weight: 700; color: var(--teal);
+      text-transform: uppercase; letter-spacing: .1em; margin-bottom: 12px;
+    }
+    .section-h2 {
+      font-size: clamp(26px, 3vw, 40px); font-weight: 800; color: var(--t1);
+      letter-spacing: -1px; margin-bottom: 10px; line-height: 1.12;
+    }
+    .section-sub { font-size: 15px; color: var(--t2); line-height: 1.7; max-width: 480px; margin-bottom: 52px; }
+    .features-intro { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: center; margin-bottom: 52px; }
+    /* illustrations */
+    .illus-wrap { display: flex; justify-content: center; align-items: center; }
+    .illus-wrap img {
+      max-width: 320px; width: 100%; object-fit: contain;
+      filter: drop-shadow(0 24px 48px rgba(0,9,56,.18)) drop-shadow(0 8px 16px rgba(0,9,56,.10));
+      animation: illustFloat 4s ease-in-out infinite;
+    }
+    .illus-wrap img:nth-child(1) { animation-delay: 0s; }
+    @keyframes illustFloat {
+      0%,100% { transform: translateY(0px); }
+      50%      { transform: translateY(-12px); }
+    }
+    /* desk illustration in CTA — screen blend to remove white bg */
+    .cta-illus img {
+      width: 300px; object-fit: contain;
+      mix-blend-mode: screen;
+      filter: drop-shadow(0 0 32px rgba(0,217,191,.25));
+      animation: illustFloat 4.5s ease-in-out infinite;
+    }
+    /* reading illustration in testimonials */
+    .t-intro img {
+      object-fit: contain;
+      filter: drop-shadow(0 12px 28px rgba(0,9,56,.15));
+      animation: illustFloat 3.8s ease-in-out infinite .4s;
+    }
+    .feat-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 1px; background: var(--border); border: 1px solid var(--border); border-radius: 16px; overflow: hidden; }
+    .feat-item { background: var(--bg); padding: 28px; }
+    .feat-icon { font-size: 24px; margin-bottom: 14px; }
+    .feat-item h3 { font-size: 15px; font-weight: 700; color: var(--t1); margin-bottom: 6px; }
+    .feat-item p { font-size: 13px; color: var(--t2); line-height: 1.65; }
+
+    /* SCREENSHOTS */
+    .screenshots {
+      background: var(--navy);
+      padding: 80px 48px;
+    }
+    .screenshots-inner {
+      max-width: 960px; margin: 0 auto;
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 64px; align-items: center;
+    }
+    .screenshots h2 { font-size: clamp(26px,3vw,40px); font-weight: 800; color: #fff; letter-spacing: -1px; margin-bottom: 16px; line-height: 1.1; }
+    .screenshots p { font-size: 15px; color: rgba(255,255,255,.45); line-height: 1.7; margin-bottom: 28px; }
+    .section-label-light { font-size: 12px; font-weight: 700; color: var(--teal); text-transform: uppercase; letter-spacing: .1em; margin-bottom: 12px; }
+    .dl-btns { display: flex; gap: 8px; flex-wrap: wrap; }
+    .dl-btn {
+      height: 42px; padding: 0 16px; border-radius: 9px;
+      border: 1px solid rgba(255,255,255,.18); background: rgba(255,255,255,.06);
+      color: #fff; font-family: var(--font); font-size: 13px; font-weight: 600;
+      text-decoration: none; display: inline-flex; align-items: center; gap: 7px;
+      transition: border-color .2s;
+    }
+    .dl-btn:hover { border-color: rgba(255,255,255,.4); }
+    .sc-phones { display: flex; gap: 14px; justify-content: center; align-items: flex-start; }
+    .sc-phone { width: 172px; border-radius: 28px; overflow: hidden; background: #0d1650; border: 4px solid #1a2a70; box-shadow: 0 20px 48px rgba(0,0,0,.45); }
+    .sc-phone img { width: 100%; display: block; }
+    .sc-notch { height: 18px; background: #0d1650; }
+    .sc-notch-d { height: 18px; background: #080c28; }
+    .sc-phone:nth-child(2) { margin-top: 36px; }
+
+    /* TESTIMONIALS */
+    .testimonials { max-width: 960px; margin: 0 auto; padding: 80px 48px; }
+    .t-intro { display: flex; align-items: center; gap: 24px; justify-content: center; margin-bottom: 44px; }
+    .t-intro img { width: 96px; object-fit: contain; }
+    .testimonials .section-h2 { text-align: center; margin-bottom: 0; }
+    .t-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 16px; }
+    .t-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 16px; padding: 24px; display: flex; flex-direction: column; gap: 14px; }
+    .t-stars { color: var(--yellow); font-size: 12px; letter-spacing: 1px; }
+    .t-quote { font-size: 13px; color: var(--t2); line-height: 1.7; font-style: italic; flex: 1; }
+    .t-author { display: flex; align-items: center; gap: 10px; }
+    .t-avatar { width: 34px; height: 34px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; color: #fff; flex-shrink: 0; }
+    .t-name { font-size: 13px; font-weight: 700; color: var(--t1); }
+    .t-role { font-size: 11px; color: var(--t3); margin-top: 1px; }
+
+    /* CTA */
+    .cta { background: var(--navy); padding: 80px 48px; }
+    .cta-inner { max-width: 900px; margin: 0 auto; display: grid; grid-template-columns: 1fr auto; gap: 48px; align-items: center; }
+    .cta-text { }
+    .cta-illus img { width: 280px; object-fit: contain; mix-blend-mode: screen; }
+    .cta h2 { font-size: clamp(26px,3.5vw,44px); font-weight: 900; color: #fff; letter-spacing: -1.5px; margin-bottom: 14px; line-height: 1.08; }
+    .cta h2 em { font-style: normal; color: var(--teal); }
+    .cta p { font-size: 15px; color: rgba(255,255,255,.45); line-height: 1.65; margin-bottom: 32px; }
+    .cta-btns { display: flex; gap: 10px; flex-wrap: wrap; }
+
+    /* FOOTER */
+    footer { background: #020619; padding: 56px 48px 0; }
+    .footer-inner { max-width: 960px; margin: 0 auto; }
+    .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 40px; padding-bottom: 48px; }
+    .ft-logo { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; }
+    .ft-logo img { width: 28px; height: 28px; border-radius: 8px; }
+    .ft-logo span { font-size: 16px; font-weight: 700; color: rgba(255,255,255,.85); }
+    .ft-tag { font-size: 13px; color: rgba(255,255,255,.38); line-height: 1.7; max-width: 260px; margin-bottom: 20px; }
+    .ft-social { display: flex; gap: 8px; margin-bottom: 20px; }
+    .ft-social-btn {
+      width: 36px; height: 36px; border-radius: 9px;
+      border: 1px solid rgba(255,255,255,.15);
+      background: rgba(255,255,255,.05);
+      display: flex; align-items: center; justify-content: center;
+      text-decoration: none; transition: border-color .2s, background .2s;
+    }
+    .ft-social-btn:hover { border-color: var(--teal); background: rgba(0,217,191,.1); }
+    .ft-app-btns { display: flex; gap: 7px; flex-wrap: wrap; }
+    .ft-app-btn { height: 38px; padding: 0 12px; border-radius: 9px; border: 1px solid rgba(255,255,255,.15); display: flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600; color: #fff; text-decoration: none; transition: border-color .2s; }
+    .ft-app-btn:hover { border-color: var(--teal); }
+    .ft-col h4 { font-size: 11px; font-weight: 700; color: rgba(255,255,255,.8); text-transform: uppercase; letter-spacing: .1em; margin-bottom: 14px; }
+    .ft-col a { display: block; font-size: 13px; color: rgba(255,255,255,.42); text-decoration: none; margin-bottom: 9px; transition: color .2s; }
+    .ft-col a:hover { color: rgba(255,255,255,.9); }
+    .ft-bottom { border-top: 1px solid rgba(255,255,255,.07); padding: 18px 0; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
+    .ft-copy { font-size: 12px; color: rgba(255,255,255,.25); }
+    .ft-legal { display: flex; gap: 18px; }
+    .ft-legal a { font-size: 12px; color: rgba(255,255,255,.35); text-decoration: none; transition: color .2s; }
+    .ft-legal a:hover { color: rgba(255,255,255,.8); }
+
+    /* RESPONSIVE */
+    @media (max-width:860px) {
+      nav { padding: 0 20px; }
+      .nav-links { display: none; }
+      .hero { padding: 64px 20px; }
+      .hero-inner { grid-template-columns: 1fr; gap: 48px; }
+      .chip { display: none; }
+      .proof { padding: 20px; gap: 20px; }
+      .proof-sep { display: none; }
+      .features, .testimonials { padding: 56px 20px; }
+      .features-intro { grid-template-columns: 1fr; gap: 24px; }
+      .feat-illus img { max-width: 200px; }
+      .feat-grid { grid-template-columns: 1fr; }
+      .screenshots { padding: 56px 20px; }
+      .screenshots-inner { grid-template-columns: 1fr; gap: 40px; }
+      .t-intro { flex-direction: column; }
+      .t-grid { grid-template-columns: 1fr; }
+      .cta { padding: 56px 20px; }
+      .cta-inner { grid-template-columns: 1fr; }
+      .cta-illus { display: none; }
+      footer { padding: 40px 20px 0; }
+      .footer-grid { grid-template-columns: 1fr; gap: 28px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<div class="nav-wrap" style="opacity: 1">
+<nav>
+  <a href="index.html" class="nav-logo">
+    <img src="assets/logo/syllabi-icon.png" alt="Syllabi">
+    <span class="nav-logo-text">Syllabi</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="#features">Features</a></li>
+    <li><a href="#screenshots">App</a></li>
+    <li><a href="#reviews">Reviews</a></li>
+    <li><a href="store/store.html">Store</a></li>
+  </ul>
+  <a href="#" class="nav-cta">Download App</a>
+</nav>
+</div>
+
+<!-- HERO -->
+<section class="hero" style="opacity: 1">
+  <div class="hero-inner">
+    <div>
+      <div class="hero-tag"><div class="hero-tag-dot"></div>Built for Maldivian students</div>
+      <h1>Your study<br><span class="accent">companion</span></h1>
+      <p class="hero-sub">Islam and Dhivehi don't have to be boring. Structured lessons, smart quizzes, and progress tracking — in one clean app.</p>
+      <div class="hero-btns">
+        <a href="store/store.html" class="btn-teal">Visit Store</a>
+        <a href="#" class="btn-ghost-dark">Download App</a>
+      </div>
+      <div class="hero-stats">
+        <div class="hero-stat"><div class="n">4</div><div class="l">Subjects</div></div>
+        <div class="hero-stat"><div class="n">10k+</div><div class="l">Students</div></div>
+        <div class="hero-stat"><div class="n">4.9★</div><div class="l">Rating</div></div>
+      </div>
+    </div>
+    <div class="phone-wrap">
+      <div class="phone">
+        <div class="phone-top"><div class="phone-pill"></div></div>
+        <img src="assets/screenshots/app-screen-light.png" alt="Syllabi app">
+      </div>
+      <div class="chip chip-1">
+        <div class="chip-icon">🔥</div>
+        <div><div class="ct">12-day streak!</div><div class="cs">Keep it up</div></div>
+      </div>
+      <div class="chip chip-2">
+        <div class="chip-icon">🏆</div>
+        <div><div class="ct">Rank #3</div><div class="cs">National leaderboard</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROOF -->
+<div class="proof">
+  <span class="proof-label">Trusted by qualified teachers</span>
+  <div class="proof-sep"></div>
+  <div class="proof-stats">
+    <div class="proof-stat"><div class="n">4</div><div class="l">Subjects</div></div>
+    <div class="proof-stat"><div class="n">500+</div><div class="l">Lessons</div></div>
+    <div class="proof-stat"><div class="n">100+</div><div class="l">Quizzes</div></div>
+    <div class="proof-stat"><div class="n">4.9★</div><div class="l">App Store</div></div>
+  </div>
+</div>
+
+<!-- FEATURES -->
+<section class="features" id="features">
+  <div class="features-intro">
+    <div>
+      <div class="section-label">Why Syllabi</div>
+      <h2 class="section-h2">Everything you need to<br><span class="swoosh-coral">master</span> Islam &amp; Dhivehi</h2>
+      <p class="section-sub" style="margin-bottom:0">Complete GCE O Level and A Level content built around the Maldives national curriculum. More subjects on the way.</p>
+    </div>
+    <div class="illus-wrap">
+      <img src="assets/illustrations/illus-teacher.png" alt="Teacher illustration">
+    </div>
+  </div>
+  <div class="feat-grid">
+    <div class="feat-item">
+      <div class="feat-icon">📖</div>
+      <h3>Structured Lessons</h3>
+      <p>O &amp; A Level content organised by subject, unit, and lesson.</p>
+    </div>
+    <div class="feat-item">
+      <div class="feat-icon">🎯</div>
+      <h3>Smart Quizzes</h3>
+      <p>MCQ, drag &amp; drop, fill-in-the-blank — multiple formats to test every topic.</p>
+    </div>
+    <div class="feat-item">
+      <div class="feat-icon">📈</div>
+      <h3>Progress Tracking</h3>
+      <p>Visual progress bars, daily streaks, and a national leaderboard.</p>
+    </div>
+    <div class="feat-item">
+      <div class="feat-icon">📄</div>
+      <h3>Past Papers</h3>
+      <p>Access past exam papers and marking schemes without leaving the app.</p>
+    </div>
+    <div class="feat-item">
+      <div class="feat-icon">🌙</div>
+      <h3>Reading Themes</h3>
+      <p>Light, dark, and warm modes — study comfortably at any time.</p>
+    </div>
+    <div class="feat-item">
+      <div class="feat-icon">🏆</div>
+      <h3>National Challenges</h3>
+      <p>Compete in national quizzes against students across the Maldives.</p>
+    </div>
+  </div>
+</section>
+
+<!-- SCREENSHOTS -->
+<section class="screenshots" id="screenshots">
+  <div class="screenshots-inner">
+    <div>
+      <div class="section-label-light">The App</div>
+      <h2>Clean, focused,<br>Islam &amp; Dhivehi</h2>
+      <p>Structured content for O Level and A Level. Designed to feel effortless — because studying should be the hard part.</p>
+      <div class="dl-btns">
+        <a href="#" class="dl-btn">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.7 9.05 7.42c1.35.07 2.28.74 3.08.8 1.17-.24 2.29-.93 3.53-.84 1.5.12 2.63.72 3.37 1.84-3.08 1.84-2.56 5.89.44 7.03-.51 1.46-1.19 2.9-2.42 4.03z" fill="white"/><path d="M13 3.3c.6-.8 1.5-1.4 2.3-1.5.1.9-.3 1.9-.9 2.6-.6.7-1.4 1.2-2.2 1.2-.1-.8.2-1.7.8-2.3z" fill="white"/></svg>
+          App Store
+        </a>
+        <a href="#" class="dl-btn">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M3.18 23.18a2 2 0 01-.64-1.49V2.31c.1-.57.36-1.05.73-1.37L14.82 12 3.27 24.25l-.09-.07z" fill="#4285F4"/><path d="M18.68 16.26l-3.86-3.86v-.28l3.86-3.86.09.05 4.57 2.6c1.3.74 1.3 1.95 0 2.69l-4.57 2.6-.09.06z" fill="#FBBC04"/><path d="M18.77 16.2L14.82 12.2 3.18 23.18c.43.46 1.14.52 1.93.06l13.66-7.04" fill="#34A853"/><path d="M18.77 8.2L5.11 1.16C4.32.7 3.61.76 3.18 1.22l11.64 10.98 3.95-3.96-.09-.05z" fill="#EA4335"/></svg>
+          Google Play
+        </a>
+      </div>
+    </div>
+    <div class="sc-phones">
+      <div class="sc-phone">
+        <div class="sc-notch"></div>
+        <img src="assets/screenshots/app-screen-light.png" alt="Light mode">
+      </div>
+      <div class="sc-phone">
+        <div class="sc-notch-d"></div>
+        <img src="assets/screenshots/app-screen-dark.png" alt="Dark mode">
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="testimonials" id="reviews">
+  <div class="t-intro">
+    <img src="assets/illustrations/illus-student-reading.png" alt="Student reading" style="width:120px;height:120px">
+    <h2 class="section-h2">Loved by <span class="swoosh-purple">students</span></h2>
+  </div>
+  <div class="t-grid">
+    <div class="t-card">
+      <div class="t-stars">★★★★★</div>
+      <p class="t-quote">"I went from struggling with Islam O Level to scoring an A*. The quiz system helped me focus on exactly what I didn't know."</p>
+      <div class="t-author">
+        <div class="t-avatar" style="background: linear-gradient(135deg,#6B80FF,#00D9BF);">AM</div>
+        <div><div class="t-name">Ahmed Maaniu</div><div class="t-role">Grade 11 · Malé</div></div>
+      </div>
+    </div>
+    <div class="t-card">
+      <div class="t-stars">★★★★★</div>
+      <p class="t-quote">"As a parent I love seeing my daughter's progress every day. The streak feature keeps her motivated without me having to say anything."</p>
+      <div class="t-author">
+        <div class="t-avatar" style="background: linear-gradient(135deg,#FDB800,#E8622A);">FA</div>
+        <div><div class="t-name">Fathimath Ali</div><div class="t-role">Parent · Addu City</div></div>
+      </div>
+    </div>
+    <div class="t-card">
+      <div class="t-stars">★★★★★</div>
+      <p class="t-quote">"The Dhivehi GCE A Level content is so well-structured. Everything I need is in one app — I stopped carrying 4 textbooks."</p>
+      <div class="t-author">
+        <div class="t-avatar" style="background: linear-gradient(135deg,#0dac52,#00D9BF);">HN</div>
+        <div><div class="t-name">Hassan Nadheem</div><div class="t-role">Grade 12 · Hulhumalé</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta">
+  <div class="cta-inner">
+    <div class="cta-text">
+      <h2>Ready to study<br>Islam &amp; Dhivehi <em>smarter?</em></h2>
+      <p>Join thousands of students across the Maldives using Syllabi to prepare for their O Level &amp; A Level exams.</p>
+      <div class="cta-btns">
+        <a href="store/store.html" class="btn-teal">Visit Store</a>
+        <a href="#" class="btn-ghost-dark">Download the app</a>
+      </div>
+    </div>
+    <div class="cta-illus">
+      <img src="assets/illustrations/illus-student-desk.png" alt="Student studying">
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-grid">
+      <div>
+        <div class="ft-logo">
+          <img src="assets/logo/syllabi-icon.png" alt="Syllabi" style="padding: 0px; margin: 1px; border-width: 0px; border-style: solid; border-radius: 12px; width: 29px; object-fit: cover">
+          <span>Syllabi</span>
+        </div>
+        <p class="ft-tag">The better way to learn O Level &amp; A Level Islam and Dhivehi — built for students in the Maldives.</p>
+        <div class="ft-social">
+          <a href="#" class="ft-social-btn" aria-label="Instagram">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><rect x="2" y="2" width="20" height="20" rx="5" stroke="white" stroke-width="1.7"/><circle cx="12" cy="12" r="4" stroke="white" stroke-width="1.7"/><circle cx="17.5" cy="6.5" r="1" fill="white"/></svg>
+          </a>
+          <a href="#" class="ft-social-btn" aria-label="TikTok">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="white"><path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 00-.79-.05 6.34 6.34 0 00-6.34 6.34 6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.33-6.34V8.69a8.18 8.18 0 004.78 1.52V6.76a4.85 4.85 0 01-1.01-.07z"/></svg>
+          </a>
+          <a href="#" class="ft-social-btn" aria-label="Facebook">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z" stroke="white" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </a>
+          <a href="#" class="ft-social-btn" aria-label="X / Twitter">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="white"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+          </a>
+        </div>
+        <div class="ft-app-btns">
+          <a href="store/store.html" class="ft-app-btn">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M6 2L3 6V20C3 21.1 3.9 22 5 22H19C20.1 22 21 21.1 21 20V6L18 2H6ZM3 6H21" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>Store
+          </a>
+          <a href="#" class="ft-app-btn">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.7 9.05 7.42c1.35.07 2.28.74 3.08.8 1.17-.24 2.29-.93 3.53-.84 1.5.12 2.63.72 3.37 1.84-3.08 1.84-2.56 5.89.44 7.03-.51 1.46-1.19 2.9-2.42 4.03z" fill="white"/><path d="M13 3.3c.6-.8 1.5-1.4 2.3-1.5.1.9-.3 1.9-.9 2.6-.6.7-1.4 1.2-2.2 1.2-.1-.8.2-1.7.8-2.3z" fill="white"/></svg>App Store
+          </a>
+          <a href="#" class="ft-app-btn">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M3.18 23.18a2 2 0 01-.64-1.49V2.31c.1-.57.36-1.05.73-1.37L14.82 12 3.27 24.25l-.09-.07z" fill="#4285F4"/><path d="M18.68 16.26l-3.86-3.86v-.28l3.86-3.86.09.05 4.57 2.6c1.3.74 1.3 1.95 0 2.69l-4.57 2.6-.09.06z" fill="#FBBC04"/><path d="M18.77 16.2L14.82 12.2 3.18 23.18c.43.46 1.14.52 1.93.06l13.66-7.04" fill="#34A853"/><path d="M18.77 8.2L5.11 1.16C4.32.7 3.61.76 3.18 1.22l11.64 10.98 3.95-3.96-.09-.05z" fill="#EA4335"/></svg>Google Play
+          </a>
+        </div>
+      </div>
+      <div class="ft-col">
+        <h4>Syllabi</h4>
+        <a href="#features">Features</a>
+        <a href="#screenshots">App</a>
+        <a href="#">Careers</a>
+        <a href="#">Contact Us</a>
+        <a href="#">Redeem Code</a>
+      </div>
+      <div class="ft-col">
+        <h4>Legal</h4>
+        <a href="#">Privacy Policy</a>
+        <a href="#">Terms of Service</a>
+        <a href="#">Refund Policy</a>
+      </div>
+    </div>
+    <div class="ft-bottom">
+      <span class="ft-copy">© 2026 Syllabi. All rights reserved.</span>
+      <div class="ft-legal">
+        <a href="#">Privacy Policy</a>
+        <a href="#">Terms of Service</a>
+        <a href="#">Refund Policy</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
