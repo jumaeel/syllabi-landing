@@ -296,10 +296,53 @@
     .ft-legal a { font-size: 12px; color: rgba(255,255,255,.35); text-decoration: none; transition: color .2s; }
     .ft-legal a:hover { color: rgba(255,255,255,.8); }
 
+    /* MOBILE NAV (hamburger) */
+    .nav-toggle {
+      display: none; width: 40px; height: 40px; flex-shrink: 0;
+      border: none; border-radius: 11px; cursor: pointer;
+      background: rgba(255,255,255,.12);
+      align-items: center; justify-content: center;
+    }
+    .nav-toggle span, .nav-toggle span::before, .nav-toggle span::after {
+      content: ''; display: block; position: absolute;
+      width: 18px; height: 2px; border-radius: 2px; background: #fff;
+      transition: transform .25s ease, opacity .2s ease;
+    }
+    .nav-toggle span { position: relative; }
+    .nav-toggle span::before { top: -6px; }
+    .nav-toggle span::after  { top: 6px; }
+    .nav-toggle.open span { background: transparent; }
+    .nav-toggle.open span::before { top: 0; transform: rotate(45deg); }
+    .nav-toggle.open span::after  { top: 0; transform: rotate(-45deg); }
+    .nav-menu { display: none; max-width: 960px; margin: 0 auto; }
+    .nav-menu-inner {
+      margin-top: 8px; padding: 8px;
+      background: rgba(255,255,255,.10);
+      backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255,255,255,.16); border-radius: 16px;
+      display: flex; flex-direction: column; gap: 2px;
+    }
+    .nav-menu-inner a {
+      color: rgba(255,255,255,.82); text-decoration: none;
+      font-size: 15px; font-weight: 500; padding: 13px 14px; border-radius: 11px;
+      transition: background .15s, color .15s;
+    }
+    .nav-menu-inner a:hover { background: rgba(255,255,255,.12); color: #fff; }
+    .nav-menu-inner .nav-menu-cta {
+      background: #fff; color: var(--navy); font-weight: 700;
+      text-align: center; margin-top: 4px;
+    }
+
     /* RESPONSIVE */
     @media (max-width:860px) {
-      nav { padding: 0 20px; }
+      .nav-wrap { padding: 10px 14px; }
+      nav { padding: 0 8px 0 14px; }
       .nav-links { display: none; }
+      .nav-cta { display: none; }
+      .nav-toggle { display: flex; }
+      .nav-menu { display: block; }
+      .nav-menu-inner { max-height: 0; padding-top: 0; padding-bottom: 0; overflow: hidden; opacity: 0; transition: max-height .28s ease, opacity .2s ease, padding .28s ease; }
+      .nav-menu.open .nav-menu-inner { max-height: 340px; padding-top: 8px; padding-bottom: 8px; opacity: 1; }
       .hero { padding: 64px 20px; }
       .hero-inner { grid-template-columns: 1fr; gap: 48px; }
       .chip { display: none; }
@@ -337,7 +380,17 @@
     <li><a href="store/store.html">Store</a></li>
   </ul>
   <a href="#" class="nav-cta">Download App</a>
+  <button class="nav-toggle" id="navToggle" aria-label="Menu" aria-expanded="false" onclick="toggleNav()"><span></span></button>
 </nav>
+<div class="nav-menu" id="navMenu">
+  <div class="nav-menu-inner">
+    <a href="#features" onclick="closeNav()">Features</a>
+    <a href="#screenshots" onclick="closeNav()">App</a>
+    <a href="#reviews" onclick="closeNav()">Reviews</a>
+    <a href="store/store.html">Store</a>
+    <a href="#" class="nav-menu-cta" onclick="closeNav()">Download App</a>
+  </div>
+</div>
 </div>
 
 <!-- HERO -->
@@ -576,5 +629,20 @@
   </div>
 </footer>
 
+<script>
+  function toggleNav() {
+    var m = document.getElementById('navMenu');
+    var t = document.getElementById('navToggle');
+    var open = m.classList.toggle('open');
+    t.classList.toggle('open', open);
+    t.setAttribute('aria-expanded', open ? 'true' : 'false');
+  }
+  function closeNav() {
+    document.getElementById('navMenu').classList.remove('open');
+    var t = document.getElementById('navToggle');
+    t.classList.remove('open');
+    t.setAttribute('aria-expanded', 'false');
+  }
+</script>
 </body>
 </html>
