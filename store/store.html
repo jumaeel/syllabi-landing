@@ -112,12 +112,13 @@
     /* ── FLOATING CART (FAB) ── */
     .cart-fab {
       position: fixed; right: 20px; bottom: 20px; z-index: 250;
-      width: 58px; height: 58px; border-radius: 50%; border: none;
+      height: 56px; padding: 0 22px; border-radius: 30px; border: none;
       background: var(--navy); color: #fff; cursor: pointer;
-      display: flex; align-items: center; justify-content: center;
+      display: flex; align-items: center; gap: 9px;
       box-shadow: 0 10px 28px rgba(0,9,56,.34);
       transition: transform .15s ease, box-shadow .2s ease;
     }
+    .cart-fab-text { font-size: 15px; font-weight: 700; letter-spacing: .2px; font-family: inherit; }
     .cart-fab:hover { transform: translateY(-2px); box-shadow: 0 14px 34px rgba(0,9,56,.42); }
     .cart-fab:active { transform: scale(.94); }
     .cart-fab-badge {
@@ -131,7 +132,7 @@
     .cart-fab-badge.show { display: flex; }
     @keyframes fabPulse { 0%{transform:scale(1)} 35%{transform:scale(1.14)} 100%{transform:scale(1)} }
     .cart-fab.pulse { animation: fabPulse .4s ease; }
-    @media (max-width: 420px) { .cart-fab { right: 16px; bottom: 16px; width: 54px; height: 54px; } }
+    @media (max-width: 420px) { .cart-fab { right: 16px; bottom: 16px; height: 52px; padding: 0 18px; } }
 
     /* ── CART DRAWER ── */
     .drawer-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.3); z-index: 300; display: none; opacity: 0; transition: opacity .25s; }
@@ -207,6 +208,18 @@
     .os-item-name  { flex: 1; font-size: 13px; font-weight: 500; color: var(--text-1); }
     .os-item-price { font-size: 13px; font-weight: 600; color: var(--text-1); }
     .os-divider { height: 1px; background: var(--border); margin: 14px 0; }
+    .coupon-row { display: flex; gap: 8px; }
+    .coupon-input { flex: 1; min-width: 0; padding: 11px 13px; border: 1px solid var(--border); border-radius: 10px; font-size: 13.5px; font-family: inherit; color: var(--text-1); background: var(--bg); text-transform: uppercase; letter-spacing: .5px; outline: none; transition: border-color .15s; }
+    .coupon-input::placeholder { text-transform: none; letter-spacing: normal; color: var(--text-3); }
+    .coupon-input:focus { border-color: var(--teal); background: var(--white); }
+    .coupon-btn { flex-shrink: 0; padding: 0 16px; border: none; border-radius: 10px; background: var(--navy); color: #fff; font-size: 13.5px; font-weight: 600; font-family: inherit; cursor: pointer; transition: opacity .15s; }
+    .coupon-btn:hover { opacity: .88; }
+    .coupon-msg { font-size: 12.5px; margin-top: 8px; line-height: 1.4; display: none; }
+    .coupon-msg.show { display: block; }
+    .coupon-msg.ok { color: #007a72; }
+    .coupon-msg.err { color: #d23b3b; }
+    .os-sub-row { display: flex; justify-content: space-between; align-items: center; font-size: 13.5px; color: var(--text-2); margin-bottom: 10px; }
+    .os-discount-row { color: #007a72; font-weight: 600; }
     .os-total-row { display: flex; justify-content: space-between; align-items: center; }
     .os-total-label { font-size: 14px; font-weight: 600; color: var(--text-2); }
     .os-total-price { font-size: 24px; font-weight: 800; color: var(--text-1); }
@@ -376,7 +389,9 @@
     .intent-confirm { flex:1;height:44px;border-radius:10px;border:none;background:var(--navy);color:#E5E7EB;font-family:var(--font);font-size:14px;font-weight:600;cursor:pointer;transition:opacity .15s; }
     .intent-confirm:hover { opacity:.88; }
     /* Signed-in pill */
-    .signed-in-pill { display:flex;align-items:center;gap:8px;background:rgba(0,217,191,.1);border:1px solid rgba(0,217,191,.3);border-radius:20px;padding:6px 14px;font-size:13px;font-weight:600;color:#007a72; }
+    .signed-group { display:flex; align-items:center; gap:8px; flex-shrink:0; }
+    .signed-in-pill { display:flex;align-items:center;gap:8px;background:rgba(0,217,191,.1);border:1px solid rgba(0,217,191,.3);border-radius:20px;padding:6px 14px;font-size:13px;font-weight:600;color:#007a72;white-space:nowrap; }
+    .orders-btn { white-space:nowrap; }
     .signed-in-pill .avatar { width:24px;height:24px;border-radius:50%;background:var(--teal);color:var(--navy);font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0; }
     /* Intent badge on cart item */
     .intent-tag { font-size:10px;font-weight:700;padding:2px 7px;border-radius:10px;display:inline-block;margin-top:3px; }
@@ -420,6 +435,10 @@
       .orders-wrap { padding: 28px 16px; }
       .signin-modal, .intent-modal { width: min(380px, calc(100vw - 32px)); }
     }
+    @media (max-width: 480px) {
+      .orders-label { display: none; }
+      .orders-btn { padding: 0 12px; }
+    }
     @media (max-width: 420px) {
       .topnav { gap: 8px; padding: 0 12px; }
       .topnav-right { gap: 8px; }
@@ -439,10 +458,6 @@
 <nav class="topnav">
   <div class="topnav-logo"><img src="../assets/logo/syllabi-icon.png" alt="Syllabi"><span class="topnav-name">Syllabi Store</span></div>
   <div class="topnav-right">
-    <button class="cart-btn" onclick="toggleCart()">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M6 2L3 6V20C3 21.1 3.9 22 5 22H19C20.1 22 21 21.1 21 20V6L18 2H6ZM9 17C8.4 17 8 16.6 8 16C8 15.4 8.4 15 9 15C9.6 15 10 15.4 10 16C10 16.6 9.6 17 9 17ZM15 17C14.4 17 14 16.6 14 16C14 15.4 14.4 15 15 15C15.6 15 16 15.4 16 16C16 16.6 15.6 17 15 17ZM3 6H21" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
-      <span class="cart-label">Cart</span> <span class="cart-badge" id="cartBadge">0</span>
-    </button>
     <button class="sign-btn" id="signBtn" onclick="toggleSignIn()">Sign in</button>
   </div>
 </nav>
@@ -543,7 +558,7 @@
       <!-- Left: identity + heading -->
       <div style="flex:1.4">
         <div class="hero-badge">🇲🇻 Official Syllabi Store</div>
-        <p style="font-size:clamp(22px,2.8vw,34px);color:#fff;margin-bottom:8px;font-weight:800;letter-spacing:-0.3px;">Edtech Store for the Maldives</p>
+        <p style="font-size:clamp(22px,2.8vw,34px);color:#fff;margin-bottom:8px;font-weight:800;letter-spacing:-0.3px;">Learning Store for Dhivehin</p>
         <h1 style="font-size:clamp(14px,1.4vw,18px);font-weight:400;line-height:1.4;letter-spacing:0;color:rgba(255,255,255,0.5);margin-bottom:22px;">Syllabi &mdash; Your Study Companion</h1>
         <!-- Category pills -->
         <div class="hero-cats" style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px">
@@ -618,7 +633,6 @@
 
     <div class="filter-section" id="section-merch">
       <div class="store-section-title">🛍️ Syllabi Merchandise</div>
-      <p style="font-size:14px;color:var(--text-3);margin:-12px 0 20px">Official Syllabi gear — ships within the Maldives.</p>
       <div class="games-grid" id="merchGrid"></div>
     </div>
   </div>
@@ -680,6 +694,22 @@
         <div class="os-title">Order Summary</div>
         <div class="os-items" id="orderItems"></div>
         <div class="os-divider"></div>
+        <div class="coupon-box">
+          <div class="coupon-row">
+            <input type="text" id="couponInput" class="coupon-input" placeholder="Discount code" autocomplete="off" onkeydown="if(event.key==='Enter'){event.preventDefault();applyCoupon()}">
+            <button type="button" class="coupon-btn" onclick="applyCoupon()">Apply</button>
+          </div>
+          <div class="coupon-msg" id="couponMsg"></div>
+        </div>
+        <div class="os-divider"></div>
+        <div class="os-sub-row" id="osSubRow">
+          <span>Subtotal</span>
+          <span id="orderSubtotal">MVR 0</span>
+        </div>
+        <div class="os-sub-row os-discount-row" id="osDiscountRow" style="display:none">
+          <span id="osDiscountLabel">Discount</span>
+          <span id="orderDiscount">−MVR 0</span>
+        </div>
         <div class="os-total-row">
           <span class="os-total-label">Total</span>
           <span class="os-total-price" id="orderTotal">MVR 0</span>
@@ -778,17 +808,18 @@
 
 <!-- FLOATING CART -->
 <button class="cart-fab" id="cartFab" onclick="toggleCart()" aria-label="Open cart">
-  <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M6 2L3 6V20C3 21.1 3.9 22 5 22H19C20.1 22 21 21.1 21 20V6L18 2H6ZM9 17C8.4 17 8 16.6 8 16C8 15.4 8.4 15 9 15C9.6 15 10 15.4 10 16C10 16.6 9.6 17 9 17ZM15 17C14.4 17 14 16.6 14 16C14 15.4 14.4 15 15 15C15.6 15 16 15.4 16 16C16 16.6 15.6 17 15 17ZM3 6H21" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+  <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M6 2L3 6V20C3 21.1 3.9 22 5 22H19C20.1 22 21 21.1 21 20V6L18 2H6ZM9 17C8.4 17 8 16.6 8 16C8 15.4 8.4 15 9 15C9.6 15 10 15.4 10 16C10 16.6 9.6 17 9 17ZM15 17C14.4 17 14 16.6 14 16C14 15.4 14.4 15 15 15C15.6 15 16 15.4 16 16C16 16.6 15.6 17 15 17ZM3 6H21" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+  <span class="cart-fab-text">Cart</span>
   <span class="cart-fab-badge" id="cartFabBadge">0</span>
 </button>
 
 <script>
   // ── Data ──
   const PRODUCTS = [
-    { id:'islam-o', name:'O-Level Islam', icon:'🕌', color:'rgba(0,217,191,0.1)', price:79, badge:'popular', desc:'Complete GCE O Level Islam curriculum', features:['8 Units, 120 Lessons','5 Quiz types','Past papers included','1 year access'], code:'ISLM', tag:'O Level' },
-    { id:'islam-a', name:'A-Level Islam', icon:'🕌', color:'rgba(107,128,255,0.1)', price:79, badge:'', desc:'HSC A Level Islam — full content', features:['10 Units, 150 Lessons','6 Quizzes','Marking schemes','1 year access'], code:'ISLA', tag:'A Level' },
-    { id:'dhivehi-o', name:'Dhivehi GCE O Level', icon:'📚', color:'rgba(253,184,0,0.12)', price:79, badge:'', desc:'Dhivehi language — O Level track', features:['12 Units, 130 Lessons','4 Quizzes','Grammar resources','1 year access'], code:'DHVO', tag:'O Level' },
-    { id:'dhivehi-a', name:'Dhivehi GCE A Level', icon:'📗', color:'rgba(0,217,191,0.1)', price:79, badge:'new', desc:'Advanced Dhivehi language & literature', features:['15 Units, 200 Lessons','10 Quizzes','Literature analysis','1 year access'], code:'DHVA', tag:'A Level' },
+    { id:'islam-o', name:'O-Level Islam', icon:'🕌', color:'rgba(0,217,191,0.1)', price:79, badge:'popular', desc:'Complete GCE O Level Islam curriculum', features:['8 Units, 120 Lessons','5 Quiz types','Past papers included','1 month access'], code:'ISLM', tag:'O Level' },
+    { id:'islam-a', name:'A-Level Islam', icon:'🕌', color:'rgba(107,128,255,0.1)', price:79, badge:'', desc:'HSC A Level Islam — full content', features:['10 Units, 150 Lessons','6 Quizzes','Marking schemes','1 month access'], code:'ISLA', tag:'A Level' },
+    { id:'dhivehi-o', name:'Dhivehi GCE O Level', icon:'📚', color:'rgba(253,184,0,0.12)', price:79, badge:'', desc:'Dhivehi language — O Level track', features:['12 Units, 130 Lessons','4 Quizzes','Grammar resources','1 month access'], code:'DHVO', tag:'O Level' },
+    { id:'dhivehi-a', name:'Dhivehi GCE A Level', icon:'📗', color:'rgba(0,217,191,0.1)', price:79, badge:'new', desc:'Advanced Dhivehi language & literature', features:['15 Units, 200 Lessons','10 Quizzes','Literature analysis','1 month access'], code:'DHVA', tag:'A Level' },
   ];
   const MERCH = [
     { id:'mug', name:'Syllabi Mug', icon:'☕', img:'../assets/products/mug.svg', color:'rgba(0,9,56,0.06)', price:89, badge:'', desc:'Classic 11oz ceramic mug with the Syllabi logo. Start every study session right.', features:['11oz ceramic', 'Dishwasher safe', 'Navy + teal Syllabi branding', 'Ships in 3–5 days'], code:'MUG', tag:'Merch', physical:true },
@@ -802,8 +833,8 @@
     { id:'workbook-islam', name:'Islam Revision Workbook', img:'', price:99, badge:'', desc:'Printed revision workbook with practice questions, mind maps, and answer spaces.', features:['120 pages','O Level & A Level sections','Fill-in exercises','A4 spiral bound'], physical:true },
   ];
   const PREMIUM = [
-    { id:'bundle', name:'Premium Bundle', icon:'⭐', color:'rgba(253,184,0,0.15)', price:199, badge:'best', desc:'All current and future subjects included', features:['All subjects unlocked','Priority quiz updates','Exclusive challenges','National leaderboard access','1 year access'], code:'PREM', tag:'Bundle' },
-    { id:'annual', name:'Annual Premium', icon:'👑', color:'rgba(0,9,56,0.06)', price:1799, badge:'', desc:'Full year of everything — best value', features:['Everything in Premium Bundle','Unlimited subject access','School/family sharing (up to 3)','24/7 support','1 year access'], code:'ANPL', tag:'Annual' },
+    { id:'bundle', name:'Premium Bundle', icon:'⭐', color:'rgba(253,184,0,0.15)', price:199, badge:'best', desc:'All current and future subjects included', features:['All subjects unlocked','Priority quiz updates','Exclusive challenges','National leaderboard access','1 month access'], code:'PREM', tag:'Bundle' },
+    { id:'annual', name:'Annual Premium', icon:'👑', color:'rgba(0,9,56,0.06)', price:1799, badge:'', per:'yr', desc:'Full year of everything — best value', features:['Everything in Premium Bundle','Unlimited subject access','School/family sharing (up to 3)','24/7 support','1 year access'], code:'ANPL', tag:'Annual' },
   ];
 
   // ── Order history ──
@@ -863,7 +894,7 @@
     isSignedIn = true;
     document.getElementById('signinOverlay').classList.remove('open');
     const el = document.getElementById('signBtn');
-    el.outerHTML = '<div style="display:flex;align-items:center;gap:8px" id="signBtnGroup"><div class="signed-in-pill" id="signBtn" onclick="toggleSignIn()" style="cursor:pointer"><div class="avatar">A</div>Ahmed</div><button class="cart-btn" onclick="showOrders()" style="gap:6px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M9 5H7C5.9 5 5 5.9 5 7V19C5 20.1 5.9 21 7 21H17C18.1 21 19 20.1 19 19V7C19 5.9 18.1 5 17 5H15M9 5C9 5.6 9.4 6 10 6H14C14.6 6 15 5.6 15 5M9 5C9 4.4 9.4 4 10 4H14C14.6 4 15 4.4 15 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>My Orders</button></div>';
+    el.outerHTML = '<div class="signed-group" id="signBtnGroup"><div class="signed-in-pill" id="signBtn" onclick="toggleSignIn()" style="cursor:pointer"><div class="avatar">A</div><span class="signed-name">Ahmed</span></div><button class="cart-btn orders-btn" onclick="showOrders()" style="gap:6px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M9 5H7C5.9 5 5 5.9 5 7V19C5 20.1 5.9 21 7 21H17C18.1 21 19 20.1 19 19V7C19 5.9 18.1 5 17 5H15M9 5C9 5.6 9.4 6 10 6H14C14.6 6 15 5.6 15 5M9 5C9 4.4 9.4 4 10 4H14C14.6 4 15 4.4 15 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg><span class="orders-label">My Orders</span></button></div>';
     const tip = document.createElement('div');
     tip.style.cssText = 'position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#000938;color:#fff;padding:12px 20px;border-radius:12px;font-size:13px;font-weight:600;z-index:999;box-shadow:0 8px 24px rgba(0,0,0,.2);display:flex;align-items:center;gap:8px;max-width:calc(100vw - 32px);text-align:center';
     tip.innerHTML = '🔓 Signed in as Ahmed — subjects will auto-unlock after purchase';
@@ -1000,7 +1031,7 @@
         </div>
         <div class="product-features">${p.features.map(f=>`<div class="product-feature"><span class="feat-dot"></span>${f}</div>`).join('')}</div>
         <div class="product-footer">
-          <div class="product-price">MVR ${p.price}<span>/yr</span></div>
+          <div class="product-price">MVR ${p.price}<span>/${p.per||'mo'}</span></div>
           <button class="add-btn" id="btn-${p.id}" onclick="addToCart('${p.id}')">${cart.find(i=>i.id===p.id)?'Added ✓':'Add to cart'}</button>
         </div>
       </div>
@@ -1026,7 +1057,7 @@
   }
   function updateCartUI() {
     const badge = document.getElementById('cartBadge');
-    badge.textContent = cart.length;
+    if (badge) badge.textContent = cart.length;
     const fabBadge = document.getElementById('cartFabBadge');
     if (fabBadge) { fabBadge.textContent = cart.length; fabBadge.classList.toggle('show', cart.length > 0); }
     const items = document.getElementById('drawerItems');
@@ -1048,7 +1079,7 @@
           <div class="cart-item-icon" style="background:${i.color||'#F3F4F6'}">${i.icon||'📦'}</div>
           <div class="cart-item-info">
             <div class="cart-item-name">${i.name}</div>
-            <div class="cart-item-price">MVR ${i.price * (i.qty||1)}${i.physical?' + shipping':' · 1 year'}</div>
+            <div class="cart-item-price">MVR ${i.price * (i.qty||1)}${i.physical?' + shipping':(i.per==='yr'?' · 1 year':' · 1 month')}</div>
             <div class="qty-stepper">
               <button class="qty-btn" onclick="changeQty('${i.id}',-1)">−</button>
               <span class="qty-val">${i.qty||1}</span>
@@ -1090,8 +1121,6 @@
     } else {
       noticeEl.innerHTML = '';
     }
-    const total = cart.reduce((s,i)=>s+i.price*(i.qty||1),0);
-    document.getElementById('orderTotal').textContent='MVR '+total;
     document.getElementById('orderItems').innerHTML = cart.map(i=>{
       const tag = i.intent==='gift' ? ' 🎁' : i.intent==='self' && isSignedIn ? ' ✓' : '';
       return `<div class="os-item">
@@ -1100,7 +1129,65 @@
         <div class="os-item-price">MVR ${i.price}</div>
       </div>`;
     }).join('');
+    renderOrderTotals();
     showScreen('screen-checkout');
+  }
+
+  // ── Coupons / discounts ──
+  const COUPONS = {
+    SYLLABI10:  { type:'pct',  value:10, label:'SYLLABI10 — 10% off' },
+    STUDENT20:  { type:'pct',  value:20, label:'STUDENT20 — 20% off' },
+    EID25:      { type:'pct',  value:25, label:'EID25 — 25% off' },
+    WELCOME50:  { type:'flat', value:50, label:'WELCOME50 — MVR 50 off' }
+  };
+  let appliedCoupon = null;
+  function cartSubtotal() { return cart.reduce((s,i)=>s+i.price*(i.qty||1),0); }
+  function discountFor(subtotal) {
+    if (!appliedCoupon) return 0;
+    const c = COUPONS[appliedCoupon];
+    if (!c) return 0;
+    let d = c.type==='pct' ? Math.round(subtotal*c.value/100) : c.value;
+    return Math.min(d, subtotal);
+  }
+  function renderOrderTotals() {
+    const subtotal = cartSubtotal();
+    const discount = discountFor(subtotal);
+    const total = subtotal - discount;
+    document.getElementById('orderSubtotal').textContent = 'MVR '+subtotal;
+    const dRow = document.getElementById('osDiscountRow');
+    if (discount > 0) {
+      dRow.style.display = 'flex';
+      document.getElementById('osDiscountLabel').textContent = 'Discount ('+appliedCoupon+')';
+      document.getElementById('orderDiscount').textContent = '−MVR '+discount;
+    } else {
+      dRow.style.display = 'none';
+    }
+    document.getElementById('orderTotal').textContent = 'MVR '+total;
+  }
+  function applyCoupon() {
+    const input = document.getElementById('couponInput');
+    const msg = document.getElementById('couponMsg');
+    const code = (input.value||'').trim().toUpperCase();
+    msg.classList.add('show');
+    if (!code) {
+      appliedCoupon = null;
+      msg.className = 'coupon-msg show err';
+      msg.textContent = 'Enter a discount code.';
+      renderOrderTotals();
+      return;
+    }
+    if (COUPONS[code]) {
+      appliedCoupon = code;
+      const subtotal = cartSubtotal();
+      const discount = discountFor(subtotal);
+      msg.className = 'coupon-msg show ok';
+      msg.textContent = '✓ '+COUPONS[code].label+' applied — you save MVR '+discount+'.';
+    } else {
+      appliedCoupon = null;
+      msg.className = 'coupon-msg show err';
+      msg.textContent = 'That code isn\'t valid. Try SYLLABI10 or STUDENT20.';
+    }
+    renderOrderTotals();
   }
   function selectPayment(el) {
     document.querySelectorAll('.payment-method').forEach(m=>m.classList.remove('selected'));
@@ -1138,7 +1225,7 @@
       const code = `SYL-${(codeFirst.code||'CODE')}-${seg()}-${seg()}`;
       document.getElementById('redeemCode').textContent = code;
       document.getElementById('miniCodeDisplay').textContent = code;
-      document.getElementById('codeProduct').textContent = `${codeFirst.name} · Valid 1 year`;
+      document.getElementById('codeProduct').textContent = `${codeFirst.name} · Valid 1 ${codeFirst.per==='yr'?'year':'month'}`;
     }
     showScreen('screen-success');
     // Record live order
