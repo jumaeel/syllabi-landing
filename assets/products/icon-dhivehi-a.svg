@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
+  <defs>
+    <linearGradient id="da-grad" x1="64" y1="22" x2="64" y2="112" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#2BD9C4"/>
+      <stop offset="1" stop-color="#10A89A"/>
+    </linearGradient>
+    <filter id="da-soft" x="-40%" y="-30%" width="180%" height="175%">
+      <feDropShadow dx="0" dy="9" stdDeviation="9" flood-color="#15B7A6" flood-opacity="0.32"/>
+    </filter>
+  </defs>
+  <g filter="url(#da-soft)">
+    <!-- shield/crest with top finial -->
+    <path d="M64 22
+             c3 0 5 2 5 5 c0 3 -2 4 -3 6 c4 1 9 2 16 2
+             c8 0 14 -0.5 18 -1 c4 -0.5 6 2 6 6
+             l0 30 c0 22 -16 36 -42 47 c-26 -11 -42 -25 -42 -47
+             l0 -30 c0 -4 2 -6.5 6 -6 c4 0.5 10 1 18 1
+             c7 0 12 -1 16 -2 c-1 -2 -3 -3 -3 -6 c0 -3 2 -5 5 -5 Z"
+          fill="url(#da-grad)" stroke="url(#da-grad)" stroke-width="2" stroke-linejoin="round"/>
+    <!-- white lines (book/text) -->
+    <g stroke="#ffffff" stroke-width="6" stroke-linecap="round" opacity="0.95">
+      <line x1="44" y1="60" x2="84" y2="60"/>
+      <line x1="42" y1="76" x2="86" y2="76"/>
+      <line x1="44" y1="92" x2="84" y2="92"/>
+    </g>
+  </g>
+</svg>

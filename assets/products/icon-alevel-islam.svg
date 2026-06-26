@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
+  <defs>
+    <linearGradient id="ai-top" x1="64" y1="24" x2="64" y2="70" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#6E9BFF"/>
+      <stop offset="1" stop-color="#5478F0"/>
+    </linearGradient>
+    <linearGradient id="ai-left" x1="24" y1="47" x2="64" y2="110" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#5274EC"/>
+      <stop offset="1" stop-color="#4760E0"/>
+    </linearGradient>
+    <linearGradient id="ai-right" x1="104" y1="47" x2="64" y2="110" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#5446D6"/>
+      <stop offset="1" stop-color="#3F2EC4"/>
+    </linearGradient>
+    <linearGradient id="ai-band" x1="24" y1="55" x2="104" y2="85" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#FFD24D"/>
+      <stop offset="1" stop-color="#F59E3C"/>
+    </linearGradient>
+    <filter id="ai-soft" x="-40%" y="-30%" width="180%" height="175%">
+      <feDropShadow dx="0" dy="9" stdDeviation="9" flood-color="#4138B0" flood-opacity="0.32"/>
+    </filter>
+  </defs>
+  <g filter="url(#ai-soft)" stroke-linejoin="round">
+    <path d="M64 24 L104 47 L64 70 L24 47 Z" fill="url(#ai-top)" stroke="url(#ai-top)" stroke-width="7"/>
+    <path d="M24 47 L64 70 L64 110 L24 87 Z" fill="url(#ai-left)" stroke="url(#ai-left)" stroke-width="7"/>
+    <path d="M104 47 L64 70 L64 110 L104 87 Z" fill="url(#ai-right)" stroke="url(#ai-right)" stroke-width="7"/>
+    <path d="M24 60 L64 83 L64 75 L24 52 Z" fill="url(#ai-band)"/>
+    <path d="M104 60 L64 83 L64 75 L104 52 Z" fill="url(#ai-band)"/>
+  </g>
+</svg>

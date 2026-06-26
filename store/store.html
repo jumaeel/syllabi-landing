@@ -88,6 +88,7 @@
     .product-card.premium { border-color: var(--navy); }
     .product-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; margin-bottom: 16px; }
     .product-icon { width: 52px; height: 52px; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 24px; flex-shrink: 0; }
+    .product-icon img { width: 46px; height: 46px; object-fit: contain; }
     .product-badge { font-size: 10px; font-weight: 700; padding: 3px 10px; border-radius: 20px; }
     .product-badge.popular { background: rgba(0,217,191,.12); color: #007a72; }
     .product-badge.best    { background: rgba(253,184,0,.2); color: #8a6200; }
@@ -590,7 +591,7 @@
         <div class="hero-cats" style="display:grid;grid-template-columns:repeat(2,1fr);gap:10px">
           <div style="background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);border-radius:10px;padding:10px 14px;display:flex;align-items:center;gap:10px;cursor:pointer" onclick="filterStore('digital',document.querySelectorAll('.filter-btn')[1])">
             <div style="width:32px;height:32px;border-radius:8px;background:rgba(0,217,191,0.2);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0">⭐</div>
-            <div><div style="font-size:12px;font-weight:700;color:#fff">Redeem Codes</div><div style="font-size:11px;color:rgba(255,255,255,0.45)">Subjects from MVR 79</div></div>
+            <div><div style="font-size:12px;font-weight:700;color:#fff">Redeem Codes</div><div style="font-size:11px;color:rgba(255,255,255,0.45)">Subjects from MVR 150</div></div>
           </div>
           <div style="background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);border-radius:10px;padding:10px 14px;display:flex;align-items:center;gap:10px;cursor:pointer" onclick="filterStore('games',document.querySelectorAll('.filter-btn')[2])">
             <div style="width:32px;height:32px;border-radius:8px;background:rgba(107,128,255,0.25);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0">🎮</div>
@@ -870,10 +871,10 @@
 <script>
   // ── Data ──
   const PRODUCTS = [
-    { id:'islam-o', name:'O-Level Islam', icon:'🕌', color:'rgba(0,217,191,0.1)', price:79, badge:'popular', desc:'Complete GCE O Level Islam curriculum', features:['8 Units, 120 Lessons','5 Quiz types','Past papers included','1 month access'], code:'ISLM', tag:'O Level' },
-    { id:'islam-a', name:'A-Level Islam', icon:'🕌', color:'rgba(107,128,255,0.1)', price:79, badge:'', desc:'HSC A Level Islam — full content', features:['10 Units, 150 Lessons','6 Quizzes','Marking schemes','1 month access'], code:'ISLA', tag:'A Level' },
-    { id:'dhivehi-o', name:'Dhivehi GCE O Level', icon:'📚', color:'rgba(253,184,0,0.12)', price:79, badge:'', desc:'Dhivehi language — O Level track', features:['12 Units, 130 Lessons','4 Quizzes','Grammar resources','1 month access'], code:'DHVO', tag:'O Level' },
-    { id:'dhivehi-a', name:'Dhivehi GCE A Level', icon:'📗', color:'rgba(0,217,191,0.1)', price:79, badge:'new', desc:'Advanced Dhivehi language & literature', features:['15 Units, 200 Lessons','10 Quizzes','Literature analysis','1 month access'], code:'DHVA', tag:'A Level' },
+    { id:'islam-o', name:'O-Level Islam', icon:'🕌', img:'../assets/products/icon-olevel-islam.svg', color:'rgba(46,124,246,0.10)', price:150, badge:'popular', desc:'Complete GCE O Level Islam curriculum', features:['8 Units, 120 Lessons','5 Quiz types','Past papers included','1 month access'], code:'ISLM', tag:'O Level' },
+    { id:'islam-a', name:'A-Level Islam', icon:'🕌', img:'../assets/products/icon-alevel-islam.svg', color:'rgba(107,128,255,0.12)', price:150, badge:'', desc:'HSC A Level Islam — full content', features:['10 Units, 150 Lessons','6 Quizzes','Marking schemes','1 month access'], code:'ISLA', tag:'A Level' },
+    { id:'dhivehi-o', name:'Dhivehi GCE O Level', icon:'📚', img:'../assets/products/icon-dhivehi-o.svg', color:'rgba(253,184,0,0.12)', price:150, badge:'', desc:'Dhivehi language — O Level track', features:['12 Units, 130 Lessons','4 Quizzes','Grammar resources','1 month access'], code:'DHVO', tag:'O Level' },
+    { id:'dhivehi-a', name:'Dhivehi GCE A Level', icon:'📗', img:'../assets/products/icon-dhivehi-a.svg', color:'rgba(0,217,191,0.12)', price:150, badge:'new', desc:'Advanced Dhivehi language & literature', features:['15 Units, 200 Lessons','10 Quizzes','Literature analysis','1 month access'], code:'DHVA', tag:'A Level' },
   ];
   const MERCH = [
     { id:'mug', name:'Syllabi Mug', icon:'☕', img:'../assets/products/mug.svg', color:'rgba(0,9,56,0.06)', price:89, badge:'', desc:'Classic 11oz ceramic mug with the Syllabi logo. Start every study session right.', features:['11oz ceramic', 'Dishwasher safe', 'Navy + teal Syllabi branding', 'Ships in 3–5 days'], code:'MUG', tag:'Merch', physical:true },
@@ -887,7 +888,9 @@
     { id:'workbook-islam', name:'Islam Revision Workbook', img:'', price:99, badge:'', desc:'Printed revision workbook with practice questions, mind maps, and answer spaces.', features:['120 pages','O Level & A Level sections','Fill-in exercises','A4 spiral bound'], physical:true },
   ];
   const PREMIUM = [
-    { id:'bundle', name:'Premium Bundle', icon:'⭐', color:'rgba(253,184,0,0.15)', price:199, badge:'best', desc:'All current and future subjects included', features:['All subjects unlocked','Priority quiz updates','Exclusive challenges','National leaderboard access','1 month access'], code:'PREM', tag:'Bundle' },
+    { id:'bundle', name:'Premium Bundle', icon:'⭐', color:'rgba(253,184,0,0.15)', price:199, badge:'', desc:'All current and future subjects included', features:['All subjects unlocked','Priority quiz updates','Exclusive challenges','National leaderboard access','1 month access'], code:'PREM', tag:'Bundle' },
+    { id:'premium-3mo', name:'3-Month Premium', icon:'✨', color:'rgba(0,217,191,0.15)', price:499, badge:'', per:'3mo', desc:'All subjects for a full term — save 16%', features:['Everything in Premium Bundle','All subjects unlocked','Priority quiz updates','National leaderboard access','3 months access'], code:'PR3M', tag:'Bundle' },
+    { id:'premium-6mo', name:'6-Month Premium', icon:'🚀', color:'rgba(107,128,255,0.15)', price:899, badge:'best', per:'6mo', desc:'Half a year of everything — save 25%', features:['Everything in Premium Bundle','All subjects unlocked','Priority quiz updates','National leaderboard access','6 months access'], code:'PR6M', tag:'Bundle' },
     { id:'annual', name:'Annual Premium', icon:'👑', color:'rgba(0,9,56,0.06)', price:1799, badge:'', per:'yr', desc:'Full year of everything — best value', features:['Everything in Premium Bundle','Unlimited subject access','School/family sharing (up to 3)','24/7 support','1 year access'], code:'ANPL', tag:'Annual' },
   ];
 
@@ -1069,12 +1072,14 @@
     hint.style.opacity = HINTS[type] ? '1' : '0';
   }
 
+  function perLabel(per) { return per==='yr' ? 'yr' : per==='6mo' ? '6 mo' : per==='3mo' ? '3 mo' : 'mo'; }
+  function termText(per) { return per==='yr' ? '1 year' : per==='6mo' ? '6 months' : per==='3mo' ? '3 months' : '1 month'; }
   function renderProducts(list, containerId) {
     const container = document.getElementById(containerId);
     container.innerHTML = list.map(p => `
       <div class="product-card ${p.badge==='best'?'premium':''}" id="card-${p.id}">
         <div class="product-top">
-          <div class="product-icon" style="background:${p.color}">${p.icon}</div>
+          <div class="product-icon" style="background:${p.color}">${p.img?`<img src="${p.img}" alt="">`:p.icon}</div>
           ${p.badge ? `<span class="product-badge ${p.badge}">${p.badge==='popular'?'Most popular':p.badge==='best'?'Best value':p.badge==='new'?'New':''}</span>` : '<span></span>'}
         </div>
         <div class="product-name">${p.name}</div>
@@ -1085,7 +1090,7 @@
         </div>
         <div class="product-features">${p.features.map(f=>`<div class="product-feature"><span class="feat-dot"></span>${f}</div>`).join('')}</div>
         <div class="product-footer">
-          <div class="product-price">MVR ${p.price}<span>/${p.per||'mo'}</span></div>
+          <div class="product-price">MVR ${p.price}<span>/${perLabel(p.per)}</span></div>
           <button class="add-btn" id="btn-${p.id}" onclick="addToCart('${p.id}')">${cart.find(i=>i.id===p.id)?'Added ✓':'Add to cart'}</button>
         </div>
       </div>
@@ -1133,7 +1138,7 @@
           <div class="cart-item-icon" style="background:${i.color||'#F3F4F6'}">${i.icon||'📦'}</div>
           <div class="cart-item-info">
             <div class="cart-item-name">${i.name}</div>
-            <div class="cart-item-price">MVR ${i.price * (i.qty||1)}${i.physical?' + shipping':(i.per==='yr'?' · 1 year':' · 1 month')}</div>
+            <div class="cart-item-price">MVR ${i.price * (i.qty||1)}${i.physical?' + shipping':' · '+termText(i.per)}</div>
             <div class="qty-stepper">
               <button class="qty-btn" onclick="changeQty('${i.id}',-1)">−</button>
               <span class="qty-val">${i.qty||1}</span>
@@ -1279,7 +1284,7 @@
       const code = `SYL-${(codeFirst.code||'CODE')}-${seg()}-${seg()}`;
       document.getElementById('redeemCode').textContent = code;
       document.getElementById('miniCodeDisplay').textContent = code;
-      document.getElementById('codeProduct').textContent = `${codeFirst.name} · Valid 1 ${codeFirst.per==='yr'?'year':'month'}`;
+      document.getElementById('codeProduct').textContent = `${codeFirst.name} · Valid ${termText(codeFirst.per)}`;
     }
     showScreen('screen-success');
     // Record live order

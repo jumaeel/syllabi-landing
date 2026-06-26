@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
+  <defs>
+    <linearGradient id="do-back" x1="60" y1="40" x2="96" y2="112" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#F6A828"/>
+      <stop offset="1" stop-color="#E98A1E"/>
+    </linearGradient>
+    <linearGradient id="do-mid" x1="52" y1="40" x2="80" y2="112" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#FBB734"/>
+      <stop offset="1" stop-color="#F49A24"/>
+    </linearGradient>
+    <linearGradient id="do-front" x1="40" y1="40" x2="64" y2="112" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#FFD24D"/>
+      <stop offset="1" stop-color="#FBB12F"/>
+    </linearGradient>
+    <filter id="do-soft" x="-40%" y="-30%" width="180%" height="175%">
+      <feDropShadow dx="0" dy="9" stdDeviation="9" flood-color="#E79A22" flood-opacity="0.32"/>
+    </filter>
+  </defs>
+  <g filter="url(#do-soft)">
+    <!-- binder ring -->
+    <path d="M76 30 a14 14 0 1 1 -2 0" fill="none" stroke="#F4B72E" stroke-width="9" stroke-linecap="round"/>
+    <!-- fanned cards -->
+    <g transform="rotate(28 60 50)"><rect x="45" y="42" width="30" height="68" rx="13" fill="url(#do-back)"/></g>
+    <g transform="rotate(13 60 50)"><rect x="45" y="42" width="30" height="68" rx="13" fill="url(#do-mid)"/></g>
+    <g transform="rotate(-7 60 50)">
+      <rect x="44" y="42" width="31" height="68" rx="13" fill="url(#do-front)"/>
+      <rect x="52" y="54" width="16" height="7" rx="3.5" fill="#FFE7A3"/>
+    </g>
+  </g>
+</svg>

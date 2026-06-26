@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
+  <defs>
+    <linearGradient id="oi-bot" x1="64" y1="44" x2="64" y2="98" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#7DB9FF"/>
+      <stop offset="1" stop-color="#3E8AFF"/>
+    </linearGradient>
+    <linearGradient id="oi-top" x1="64" y1="20" x2="64" y2="64" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#37B5FF"/>
+      <stop offset="1" stop-color="#1E62E6"/>
+    </linearGradient>
+    <filter id="oi-soft" x="-40%" y="-30%" width="180%" height="175%">
+      <feDropShadow dx="0" dy="9" stdDeviation="9" flood-color="#2C79F2" flood-opacity="0.30"/>
+    </filter>
+  </defs>
+  <g filter="url(#oi-soft)">
+    <path d="M22 96 L22 67 L46 44 L64 55 L82 44 L106 67 L106 96 Z"
+          fill="url(#oi-bot)" stroke="url(#oi-bot)" stroke-width="11" stroke-linejoin="round" stroke-linecap="round"/>
+    <path d="M36 62 L36 40 L52 22 L64 31 L76 22 L92 40 L92 62 Z"
+          fill="url(#oi-top)" stroke="url(#oi-top)" stroke-width="10" stroke-linejoin="round" stroke-linecap="round"/>
+  </g>
+</svg>
