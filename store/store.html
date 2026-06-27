@@ -397,6 +397,37 @@
     .orders-empty { text-align:center; padding:60px 24px; }
     .orders-empty .oe-icon { font-size:48px; margin-bottom:12px; }
     .orders-empty p { font-size:15px; color:var(--text-3); }
+    /* Profile */
+    .profile-id { display:flex; align-items:center; gap:16px; background:var(--white); border:1px solid var(--border); border-radius:var(--r); padding:22px 24px; margin-bottom:16px; }
+    .profile-avatar { width:60px; height:60px; border-radius:50%; background:var(--teal); color:var(--navy); font-size:24px; font-weight:800; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+    .profile-id-name { font-size:19px; font-weight:800; color:var(--text-1); }
+    .profile-id-user { font-size:13px; color:var(--text-3); margin-top:2px; }
+    .profile-signout { margin-left:auto; flex-shrink:0; background:none; border:1.5px solid var(--border); color:var(--text-2); font-family:var(--font); font-size:13px; font-weight:600; padding:8px 16px; border-radius:10px; cursor:pointer; transition:all .15s; }
+    .profile-signout:hover { border-color:#d23b3b; color:#d23b3b; }
+    .profile-points { background:linear-gradient(135deg, var(--navy) 0%, #0d1a70 100%); border-radius:var(--r); padding:22px 24px; margin-bottom:16px; color:#fff; display:flex; align-items:center; gap:18px; flex-wrap:wrap; }
+    .pp-num { font-size:38px; font-weight:800; letter-spacing:-1px; line-height:1; color:var(--teal); }
+    .pp-label { font-size:12px; color:rgba(255,255,255,.6); margin-top:4px; }
+    .pp-code-wrap { margin-left:auto; text-align:right; }
+    .pp-code-cap { font-size:11px; color:rgba(255,255,255,.5); margin-bottom:5px; }
+    .pp-code { display:inline-flex; align-items:center; gap:8px; }
+    .pp-code b { font-size:15px; font-weight:800; letter-spacing:1px; background:rgba(255,255,255,.1); border:1px dashed rgba(0,217,191,.5); border-radius:9px; padding:7px 12px; }
+    .pp-refer { background:var(--teal); color:var(--navy); border:none; font-family:var(--font); font-size:12.5px; font-weight:700; padding:8px 14px; border-radius:9px; cursor:pointer; transition:opacity .15s; }
+    .pp-refer:hover { opacity:.9; }
+    .profile-section-h { font-size:13px; font-weight:700; color:var(--text-3); text-transform:uppercase; letter-spacing:.06em; margin:24px 4px 12px; }
+    .profile-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+    .profile-field { background:var(--white); border:1px solid var(--border); border-radius:12px; padding:14px 16px; display:flex; align-items:center; gap:12px; }
+    .profile-field .pf-ic { font-size:20px; flex-shrink:0; }
+    .profile-field .pf-label { font-size:11px; color:var(--text-3); }
+    .profile-field .pf-val { font-size:14px; font-weight:600; color:var(--text-1); margin-top:1px; }
+    .device-row { display:flex; align-items:center; gap:14px; background:var(--white); border:1px solid var(--border); border-radius:12px; padding:14px 16px; margin-bottom:10px; }
+    .device-ic { width:40px; height:40px; border-radius:10px; background:var(--bg); display:flex; align-items:center; justify-content:center; font-size:20px; flex-shrink:0; }
+    .device-name { font-size:14px; font-weight:600; color:var(--text-1); }
+    .device-meta { font-size:12px; color:var(--text-3); margin-top:1px; }
+    .device-last { margin-left:auto; text-align:right; font-size:12px; color:var(--text-3); flex-shrink:0; }
+    .device-last .dl-active { color:#0DAC52; font-weight:600; }
+    .device-remove { background:none; border:none; color:var(--text-3); font-size:12px; font-weight:600; cursor:pointer; font-family:var(--font); padding:4px 0 0; }
+    .device-remove:hover { color:#d23b3b; }
+    .device-slots { font-size:12px; color:var(--text-3); margin:4px 4px 0; }
     .signin-overlay { position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:600;display:none;align-items:center;justify-content:center; }
     .signin-overlay.open { display:flex; }
     .signin-modal { background:var(--white);border-radius:20px;padding:32px;width:380px;box-shadow:0 24px 64px rgba(0,0,0,.2);animation:intentIn .2s ease; }
@@ -590,6 +621,17 @@
       <h2>My Orders</h2>
     </div>
     <div id="orderHistoryList"></div>
+  </div>
+</div>
+
+<!-- SCREEN: PROFILE -->
+<div class="screen" id="screen-profile">
+  <div class="orders-wrap">
+    <div class="orders-header">
+      <button class="back-link" onclick="showScreen('screen-store')" style="margin:0">←</button>
+      <h2>My Profile</h2>
+    </div>
+    <div id="profileBody"></div>
   </div>
 </div>
 
@@ -926,6 +968,77 @@
   }
   function showOrders() { renderOrders(); showScreen('screen-orders'); }
 
+  // ── Profile ──
+  const PROFILE = {
+    name: 'Ahmed Mohamed', username: '@ahmed_mv', initial: 'A',
+    joined: 'March 2025', age: 17, phone: '+960 777 1234', email: 'ahmed@syllabi.mv',
+    points: 250, referralCode: 'AHMED-SYL10',
+    devices: [
+      { name: 'iPhone 13', meta: 'iOS 17 · Syllabi App', icon: '📱', last: 'Active now', active: true },
+      { name: 'Chrome · Windows', meta: 'Web · Hulhumalé', icon: '💻', last: '2 days ago', active: false }
+    ]
+  };
+  const MAX_DEVICES = 2;
+  function renderProfile() {
+    const p = PROFILE;
+    const fields = [
+      { ic: '📅', label: 'Joined', val: p.joined },
+      { ic: '🎂', label: 'Age', val: p.age + ' years' },
+      { ic: '📞', label: 'Phone', val: p.phone },
+      { ic: '✉️', label: 'Email', val: p.email }
+    ];
+    document.getElementById('profileBody').innerHTML = `
+      <div class="profile-id">
+        <div class="profile-avatar">${p.initial}</div>
+        <div>
+          <div class="profile-id-name">${p.name}</div>
+          <div class="profile-id-user">${p.username}</div>
+        </div>
+        <button class="profile-signout" onclick="profileSignOut()">Sign out</button>
+      </div>
+
+      <div class="profile-points">
+        <div>
+          <div class="pp-num">${p.points}</div>
+          <div class="pp-label">Referral points</div>
+        </div>
+        <div class="pp-code-wrap">
+          <div class="pp-code-cap">Your referral code</div>
+          <div class="pp-code"><b>${p.referralCode}</b><button class="pp-refer" onclick="openReferral()">Refer &amp; earn</button></div>
+        </div>
+      </div>
+
+      <div class="profile-section-h">Account details</div>
+      <div class="profile-grid">
+        ${fields.map(f => `<div class="profile-field"><span class="pf-ic">${f.ic}</span><div><div class="pf-label">${f.label}</div><div class="pf-val">${f.val}</div></div></div>`).join('')}
+      </div>
+
+      <div class="profile-section-h">Devices · up to ${MAX_DEVICES}</div>
+      <div id="deviceList"></div>
+      <div class="device-slots" id="deviceSlots"></div>`;
+    renderDevices();
+  }
+  function renderDevices() {
+    const list = document.getElementById('deviceList');
+    list.innerHTML = PROFILE.devices.map((d, i) => `
+      <div class="device-row">
+        <div class="device-ic">${d.icon}</div>
+        <div>
+          <div class="device-name">${d.name}</div>
+          <div class="device-meta">${d.meta}</div>
+        </div>
+        <div class="device-last">
+          <div class="${d.active ? 'dl-active' : ''}">${d.last}</div>
+          <button class="device-remove" onclick="removeDevice(${i})">Remove</button>
+        </div>
+      </div>`).join('');
+    document.getElementById('deviceSlots').textContent =
+      `${PROFILE.devices.length} of ${MAX_DEVICES} device slots used`;
+  }
+  function removeDevice(i) { PROFILE.devices.splice(i, 1); renderDevices(); }
+  function showProfile() { if (!isSignedIn) return; renderProfile(); showScreen('screen-profile'); }
+  function profileSignOut() { toggleSignIn(); showScreen('screen-store'); }
+
   let cart = [];
   let selectedPayment = 'bml-pay';
   let isSignedIn = false;
@@ -963,7 +1076,7 @@
     isSignedIn = true;
     document.getElementById('signinOverlay').classList.remove('open');
     const el = document.getElementById('signBtn');
-    el.outerHTML = '<div class="signed-group" id="signBtnGroup"><div class="signed-in-pill" id="signBtn" onclick="toggleSignIn()" style="cursor:pointer"><div class="avatar">A</div><span class="signed-name">Ahmed</span></div><button class="cart-btn orders-btn" onclick="showOrders()" style="gap:6px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M9 5H7C5.9 5 5 5.9 5 7V19C5 20.1 5.9 21 7 21H17C18.1 21 19 20.1 19 19V7C19 5.9 18.1 5 17 5H15M9 5C9 5.6 9.4 6 10 6H14C14.6 6 15 5.6 15 5M9 5C9 4.4 9.4 4 10 4H14C14.6 4 15 4.4 15 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg><span class="orders-label">My Orders</span></button></div>';
+    el.outerHTML = '<div class="signed-group" id="signBtnGroup"><div class="signed-in-pill" id="signBtn" onclick="showProfile()" style="cursor:pointer" title="View profile"><div class="avatar">A</div><span class="signed-name">Ahmed</span></div><button class="cart-btn orders-btn" onclick="showOrders()" style="gap:6px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M9 5H7C5.9 5 5 5.9 5 7V19C5 20.1 5.9 21 7 21H17C18.1 21 19 20.1 19 19V7C19 5.9 18.1 5 17 5H15M9 5C9 5.6 9.4 6 10 6H14C14.6 6 15 5.6 15 5M9 5C9 4.4 9.4 4 10 4H14C14.6 4 15 4.4 15 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg><span class="orders-label">My Orders</span></button></div>';
     showToast('🔓 Signed in as Ahmed — subjects will auto-unlock after purchase');
     // Resume a subscribe the user started before signing in
     if (pendingDigitalId) {
